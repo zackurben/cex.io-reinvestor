@@ -63,9 +63,9 @@ This is the settings tab, you can configure your desired Reinvestment options cu
 this program.
 
 ```
-** Note, all numbers are limited to 6 places left of the decimal point, and 8 places right of the decimal,
-as specified in the [Cex.io Terms of Service](https://cex.io/tos). These values are not validated, incorrect
-values may lead to program failure. **
+Note, all numbers are limited to 6 places left of the decimal point, and 8 places right of the
+decimal, as specified in the Cex.io Terms of Service (https://cex.io/tos). These values are not
+validated, incorrect values may lead to program failure.
 ```
 
 #### Coin
@@ -77,30 +77,30 @@ This checkbox, enables or disables each respective coin for use in the reinvestm
 #### Reserve
 
 ```
-The Reserve sets the limit for the untradeable amount of each respective coin. Reinvestment will utilize all
-available funds that exceed the reserve, but leave the reserve uninvested.
+The Reserve sets the limit for the untradeable amount of each respective coin. Reinvestment
+will utilize all available funds that exceed the reserve, but leave the reserve uninvested.
 ```
 
 #### Maximum
 
 ```
-The Maximum sets the upper limit for what you are willing to pay for 1 GHS/COIN. If the current price for
-1 GHS/COIN is greater than your specified Maximum, no action will be taken.
+The Maximum sets the upper limit for what you are willing to pay for 1 GHS/COIN. If the
+current price for 1 GHS/COIN is greater than your specified Maximum, no action will be taken.
 ```
 
 #### Minimum
 
 ```
-The Minimum sets the lower limit for what you are willing to pay for 1 GHS/COIN. If the current price for
-1 GHS/COIN is lower than your specified Minimum, no action will be taken.
+The Minimum sets the lower limit for what you are willing to pay for 1 GHS/COIN. If the
+current price for 1 GHS/COIN is lower than your specified Minimum, no action will be taken.
 ```
 
 #### Save Settings
 
 ```
-Write your settings to a text file named 'settings.txt'. If this file exists upon program start, it will
-load your credentials and setting from it. Note, when the Reinvestment is started, the settings will be
-automatically saved.
+Write your settings to a text file named 'settings.txt'. If this file exists upon program
+start, it will load your credentials and setting from it. Note, when the Reinvestment is
+started, the settings will be automatically saved.
 ```
 
 ### Information
@@ -113,7 +113,7 @@ Your account balance for every available currency.
 ```
 
 ```
-** Note, the balance will not show up until Reinvestment starts. **
+Note, the balance will not show up until Reinvestment starts.
 ```
 
 #### Start
@@ -135,22 +135,22 @@ The total number of orders canceled by the Reinvestment program, due to time exp
 ```
 
 ```
-Note, an order will be canceled, if not completed within ~60 seconds. This keeps funds available for
-reinvestment, if an order is placed during a price spike, and a new order will be placed at the updated
-price.
+Note, an order will be canceled, if not completed within ~60 seconds. This keeps funds
+available for reinvestment, if an order is placed during a price spike, and a new order will
+be placed at the updated price.
 ```
 
 #### Pending
 
 ```
-The total number of current pending orders. An order will be removed from pending if completed, or canceled
-due to time.
+The total number of current pending orders. An order will be removed from pending if
+completed, or canceled due to time.
 ```
 
 ### Log
-This tab is the Reinvestment program output. Current reinvestment actions are displayed in this temporary
-log.
+This tab is the Reinvestment program output. Current reinvestment actions are displayed in
+this temporary log.
 
 ### About
-This tab is information about the reinvestment program. It includes the methods in which to support the
-continuation of this project.
+This tab is information about the reinvestment program. It includes the methods in which to
+support the continuation of this project.
