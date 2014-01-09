@@ -33,7 +33,7 @@ If you would like to support the development of this project, please spread the 
 ##How to use (GUI):
 1. Download the [latest release](https://github.com/zackurben/cex.io-reinvestor/releases/).
 2. Generate a Cex.io API key and API secret (https://cex.io/trade/profile).
-#### This key needs the following permissions, to enable full functionality:
+     This key needs the following permissions, to enable full functionality:
   * Account Balance
   * Open Order
   * Place Order
@@ -44,7 +44,7 @@ If you would like to support the development of this project, please spread the 
 ##How to use (CLI):
 1. Download the executable (https://github.com/zackurben/cex.io-reinvestor/releases/).
 2. Generate a Cex.io API key and API secret (https://cex.io/trade/profile).
-#### This key needs the following permissions, to enable full functionality:
+    This key needs the following permissions, to enable full functionality:
   * Account Balance
   * Open Order
   * Place Order
