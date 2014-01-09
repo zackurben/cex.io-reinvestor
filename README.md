@@ -21,7 +21,8 @@ If you would like to support the development of this project, please spread the 
 3. Reserve amounts.
 4. Max/Min buy amounts.
 5. Load/Save settings from/to file.
-6. And more?
+6. Buy/Error logging.
+7. And more?
 
 ### Images
 ![](https://raw2.github.com/zackurben/cex.io-reinvestor/master/screenshots/Login.png)
