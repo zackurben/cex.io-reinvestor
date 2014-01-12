@@ -4,7 +4,7 @@
  * under the Apache V2 License, which can be found at: gson/LICENSE.txt
  * 
  * Dashboard.java
- * Version : 1.0.0
+ * Version : 1.0.1
  * Author : Zack Urben
  * Contact : zackurben@gmail.com
  * Creation : 12/31/13
@@ -417,12 +417,12 @@ public class Dashboard {
 	 * Write settings from GUI to user Reinvestor Object.
 	 */
 	private void updateSettings() {
-		this.user.BTC.active = CHECKBOX_BTC.isEnabled();
+		this.user.BTC.active = CHECKBOX_BTC.isSelected();
 		this.user.BTC.reserve = Float.valueOf(INPUT_RESERVE_BTC.getText());
 		this.user.BTC.max = Float.valueOf(INPUT_MAX_BTC.getText());
 		this.user.BTC.min = Float.valueOf(INPUT_MIN_BTC.getText());
 
-		this.user.NMC.active = CHECKBOX_NMC.isEnabled();
+		this.user.NMC.active = CHECKBOX_NMC.isSelected();
 		this.user.NMC.reserve = Float.valueOf(INPUT_RESERVE_NMC.getText());
 		this.user.NMC.max = Float.valueOf(INPUT_MAX_NMC.getText());
 		this.user.NMC.min = Float.valueOf(INPUT_MIN_NMC.getText());

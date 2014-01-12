@@ -4,7 +4,7 @@
  * under the Apache V2 License, which can be found at: gson/LICENSE.txt
  * 
  * Reinvestor.java
- * Version : 1.0.0
+ * Version : 1.0.1
  * Author : Zack Urben
  * Contact : zackurben@gmail.com
  * Creation : 12/31/13
@@ -24,8 +24,10 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Locale;
 import java.util.Scanner;
 import zackurben.cex.data.*;
 import zackurben.cex.data.Balance.Currency;
@@ -186,7 +188,9 @@ public class Reinvestor extends CexAPI {
 	 */
 	public String formatNumber(float input) {
 		DecimalFormat format = new DecimalFormat("###0.00000000");
-		format.setRoundingMode(RoundingMode.DOWN);
+		format.setRoundingMode(RoundingMode.HALF_DOWN);
+		format.setDecimalFormatSymbols(DecimalFormatSymbols
+				.getInstance(Locale.US));
 		return format.format(input);
 	}
 

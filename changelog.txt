@@ -1,2 +1,8 @@
 1.0.0
  - Initial release.
+
+1.0.1
+ - Fixed problem coin selection problem in settings with GUI.
+ - Fixed problem storing data for non US-LOCALE computers.
+ - Fixed float round-down problem.
+ - Updated version numbers.
