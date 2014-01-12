@@ -6,3 +6,10 @@
  - Fixed problem storing data for non US-LOCALE computers.
  - Fixed float round-down problem.
  - Updated version numbers.
+
+1.0.2
+ - Cleaned up/reduced console output.
+ - Added error support to Order and Balance API Calls.
+ - Added program runtime to Information Tab.
+ - Minor GUI tweaks to fix the interface on Windows machines.
+ - Code clean up.

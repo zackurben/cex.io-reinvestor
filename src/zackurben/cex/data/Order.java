@@ -4,7 +4,7 @@
  * under the Apache V2 License, which can be found at: gson/LICENSE.txt
  * 
  * Order.java
- * Version : 1.0.0
+ * Version : 1.0.2
  * Author : Zack Urben
  * Contact : zackurben@gmail.com
  * Creation : 12/31/13
@@ -49,9 +49,13 @@ public class Order {
 	 * Overide the default toString method to give basic object data dump.
 	 */
 	public String toString() {
-		return "{" + this.id + ":" + this.time + ":"
-				+ formatNumber(this.pending) + ":" + formatNumber(this.amount)
-				+ ":" + this.type + ":" + formatNumber(this.price) + ":"
-				+ this.error + "}";
+		if (error.compareToIgnoreCase("") == 0) {
+			return "{" + this.id + ":" + this.time + ":"
+					+ formatNumber(this.pending) + ":"
+					+ formatNumber(this.amount) + ":" + this.type + ":"
+					+ formatNumber(this.price) + ":" + "}";
+		} else {
+			return "{error:" + this.error + "}";
+		}
 	}
 }

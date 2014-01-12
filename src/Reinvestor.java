@@ -4,7 +4,7 @@
  * under the Apache V2 License, which can be found at: gson/LICENSE.txt
  * 
  * Reinvestor.java
- * Version : 1.0.1
+ * Version : 1.0.2
  * Author : Zack Urben
  * Contact : zackurben@gmail.com
  * Creation : 12/31/13
@@ -91,8 +91,7 @@ public class Reinvestor extends CexAPI {
 			this.gui.DISPLAY_CANCELED.setText("0");
 			this.gui.DISPLAY_ORDERS.setText("0");
 			this.gui.DISPLAY_PENDING.setText("0");
-			this.gui.DISPLAY_START_TIME.setText(new Date(System
-					.currentTimeMillis()).toString());
+			this.gui.DISPLAY_START_TIME.setText(String.valueOf(this.startTime));
 			this.gui.DISPLAY_STATUS.setText("Idle");
 			this.gui.DISPLAY_USERNAME.setText(user);
 		} else {
@@ -188,7 +187,7 @@ public class Reinvestor extends CexAPI {
 	 */
 	public String formatNumber(float input) {
 		DecimalFormat format = new DecimalFormat("###0.00000000");
-		format.setRoundingMode(RoundingMode.HALF_DOWN);
+		format.setRoundingMode(RoundingMode.DOWN);
 		format.setDecimalFormatSymbols(DecimalFormatSymbols
 				.getInstance(Locale.US));
 		return format.format(input);
@@ -236,6 +235,24 @@ public class Reinvestor extends CexAPI {
 				+ formatNumber(data.ask)
 				+ "  "
 				+ formatNumber(data.volume) + "\n";
+	}
+
+	/**
+	 * Format the input time for a duration.
+	 * 
+	 * @param time (String) - Time subtract initial calculation.
+	 * @return String representation of formatted time passed since @param time
+	 */
+	public String formatDuration(long time) {
+		time = time - this.startTime;
+
+		int h = (int) ((time / 1000) / 3600);
+		int m = (int) (((time / 1000) / 60) % 60);
+		int s = (int) ((time / 1000) % 60);
+
+		DecimalFormat df = new DecimalFormat("####00");
+
+		return df.format(h) + ":" + df.format(m) + ":" + df.format(s);
 	}
 
 	/**
@@ -301,6 +318,9 @@ public class Reinvestor extends CexAPI {
 		// update gui display
 		if (this.gui != null) {
 			this.gui.DISPLAY_API_CALLS.setText(String.valueOf(this.apiCalls));
+			long temp = System.currentTimeMillis();
+			this.gui.DISPLAY_LAST_ACTIVITY.setText(String.valueOf(temp));
+			this.gui.DISPLAY_DURATION.setText(this.formatDuration(temp));
 		}
 
 		return output;
@@ -353,12 +373,10 @@ public class Reinvestor extends CexAPI {
 					"settings.txt", false)));
 			String temp = this.username + "," + this.apiKey + ","
 					+ this.apiSecret + "," + this.BTC.active + ","
-					+ this.formatNumber(this.BTC.reserve) + ","
-					+ this.formatNumber(this.BTC.max) + ","
-					+ this.formatNumber(this.BTC.min) + "," + this.NMC.active
-					+ "," + this.formatNumber(this.NMC.reserve) + ","
-					+ this.formatNumber(this.NMC.max) + ","
-					+ this.formatNumber(this.NMC.min);
+					+ this.BTC.reserve + "," + this.BTC.max + ","
+					+ this.BTC.min + "," + this.NMC.active + ","
+					+ this.NMC.reserve + "," + this.NMC.max + ","
+					+ this.NMC.min;
 			write.write(temp);
 			this.out("Settings saved successfully!");
 		} catch (IOException e) {
@@ -545,34 +563,26 @@ public class Reinvestor extends CexAPI {
 							this.analyze(this.user.balance.NMC, this.user.NMC);
 						}
 					} else {
-						// wait till next call, no trades available
-						// remove due to spam?
-						out("Reinvestor: Waiting, insufficient funds to initiate new positions.");
+						// wait till next call, no trades available; remove due
+						// to spam?
+						// out("Reinvestor: Waiting, insufficient funds to initiate new positions.");
 					}
 				} catch (NullPointerException e) {
-					// trade_btc and trade_nmc can trigger a null pointer, but
-					// I'm not sure how atm.
-					// I believe this is a problem with Gson, but cant confirm
-					// due to the random nature of the problem.
-					out("Error 0x1.");
-					// + this.user.balance.toString());
-					log("error", "Error 0x1:\n" + this.user.BTC.toString()
-							+ "\n" + this.user.NMC.toString());
-					// + this.user.balance.toString());
+					// error with api call
+					this.user.nonce = Integer.valueOf((int) (System
+							.currentTimeMillis() / 1000));
+					out("Error 0x1: " + this.user.balance.toString());
+					log("error", "Error 0x1:\n" + this.user.balance.toString());
 				} finally {
 					try {
 						Thread.sleep(30000);
 					} catch (InterruptedException e) {
-						// Reinvestment thread is stopped
-						// Remove output, due to spam.
-						out("Error 0x2.");
-						log("error", "Error 0x2:\n" + e.getMessage());
+						// Reinvestment thread is stopped; Remove output, due to
+						// spam.
+						// out("Error 0x2.");
+						// log("error", "Error 0x2:\n" + e.getMessage());
 					}
 				}
-
-				// remove due to unneeded.
-				trade_btc = false;
-				trade_nmc = false;
 			}
 		}
 
@@ -597,21 +607,12 @@ public class Reinvestor extends CexAPI {
 				for (int a = 0; a < this.user.pending.size(); a++) {
 					if (temp > (this.user.pending.get(a).time + 60000)) {
 						Order tempOrder = this.user.pending.get(a);
-						// if (tempOrder.pending == 0) {
-						//
-						// } else {
-						// cancel order
+
 						if (this.user.debug) {
 							this.user
 									.out("[DBG] Trying to cancel the pending order..!\n"
 											+ tempOrder.toString());
 						}
-
-						// boolean canceled = new Gson().fromJson(this.user
-						// .execute("cancel_order",
-						// new String[] { String
-						// .valueOf(tempOrder.id) }),
-						// Boolean.class);
 
 						boolean canceled = Boolean.valueOf(this.user.execute(
 								"cancel_order",
@@ -655,7 +656,6 @@ public class Reinvestor extends CexAPI {
 											.parseInt(this.user.gui.DISPLAY_CANCELED
 													.getText()) + 1));
 						}
-						// }
 					} else {
 						if (this.user.debug) {
 							this.user.out("[DBG] Pending orders: ("
@@ -675,17 +675,17 @@ public class Reinvestor extends CexAPI {
 					this.user.execute("balance", new String[] {}),
 					Balance.class);
 
-			out("Reinvestor: Current " + coin.ticker.split("/")[1]
-					+ " balance: " + formatNumber(currency.available));
+			/*
+			 * out("Reinvestor: Current " + coin.ticker.split("/")[1]
+			 * + " balance: " + formatNumber(currency.available));
+			 */
 
 			// Make purchases
 			if (currency.available > coin.reserve) {
-				Ticker price;
-				price = new Gson().fromJson(this.user.execute("ticker",
+				Ticker price = new Gson().fromJson(this.user.execute("ticker",
 						new String[] { coin.ticker }), Ticker.class);
 
-				// if price range is within user specified limits, initiate
-				// purchase
+				// if price range is within user specified limits: purchase
 				if (((coin.max == 0) || (coin.max >= price.last))
 						&& ((coin.min == 0) || (price.last >= coin.min))) {
 					// calculate amount to buy
@@ -750,9 +750,11 @@ public class Reinvestor extends CexAPI {
 						}
 					} else {
 						// remove due to spam?
-						out("Reinvestor: "
-								+ coin.ticker.split("/")[1]
-								+ " Balance is too low to place the minimum order.");
+						/*
+						 * out("Reinvestor: "
+						 * + coin.ticker.split("/")[1]
+						 * + " Balance is too low to place the minimum order.");
+						 */
 					}
 				} else {
 					out("Reinvestor: The current price of a " + coin.ticker
@@ -760,7 +762,7 @@ public class Reinvestor extends CexAPI {
 							+ price.last + ", Range: " + coin.min + "-"
 							+ coin.max + ").");
 				}
-			} else {
+			} else if (currency.available != coin.reserve) {
 				out("Reinvestor: The coins available, is less than the allocated reserve limit (Coins: "
 						+ this.user.formatNumber(currency.available)
 						+ ", Reserve: "

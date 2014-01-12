@@ -4,7 +4,7 @@
  * under the Apache V2 License, which can be found at: gson/LICENSE.txt
  * 
  * Dashboard.java
- * Version : 1.0.1
+ * Version : 1.0.2
  * Author : Zack Urben
  * Contact : zackurben@gmail.com
  * Creation : 12/31/13
@@ -31,13 +31,13 @@ import javax.swing.JCheckBox;
 import javax.swing.JTextArea;
 import javax.swing.JTextPane;
 import java.awt.Font;
-import java.awt.SystemColor;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Date;
 import java.util.Scanner;
 import javax.swing.JScrollPane;
 import javax.swing.JButton;
+import javax.swing.UIManager;
 
 public class Dashboard {
 	protected JFrame FRAME_DASHBOARD;
@@ -54,10 +54,13 @@ public class Dashboard {
 	protected JTextField DISPLAY_CANCELED;
 	protected JTextField DISPLAY_PENDING;
 	protected JTextField DISPLAY_START_TIME;
+	protected JTextField DISPLAY_LAST_ACTIVITY;
+	protected JTextField DISPLAY_DURATION;
 	protected JPanel PANEL;
 	protected JPanel TAB_SETTINGS;
 	protected JPanel TAB_INFO;
 	protected JPanel TAB_LOG;
+	protected JPanel TAB_ABOUT;
 	protected JTabbedPane PANEL_TAB;
 	protected JLabel LABEL_USERNAME;
 	protected JLabel LABEL_STATUS;
@@ -71,18 +74,19 @@ public class Dashboard {
 	protected JLabel LABEL_CANCELED;
 	protected JLabel LABEL_PENDING;
 	protected JLabel LABEL_START_TIME;
+	protected JLabel LABEL_LAST_ACTIVITY;
+	protected JLabel LABEL_DURATION;
 	protected JToggleButton BUTTON_TOGGLE_REINVESTOR;
+	protected JButton BUTTON_SAVE;
 	protected JCheckBox CHECKBOX_BTC;
 	protected JCheckBox CHECKBOX_NMC;
-	protected JTextPane DISPLAY_BALANCE;
 	protected JTextArea DISPLAY_LOG;
-	protected JPanel TAB_ABOUT;
+	protected JTextPane DISPLAY_BALANCE;
 	protected JTextPane TEXTPANE_ABOUT;
 	protected JTextPane TEXTPANE_BTC;
 	protected JTextPane TEXTPANE_CEX;
 	protected JTextPane TEXTPANE_CRYPTSY;
 	protected JScrollPane SCROLLPANE;
-	protected JButton BUTTON_SAVE;
 	protected Reinvestor user;
 
 	/**
@@ -102,7 +106,7 @@ public class Dashboard {
 	private void initialize() {
 		FRAME_DASHBOARD = new JFrame();
 		FRAME_DASHBOARD.setTitle("Cex.io Reinvestor - By Zack Urben");
-		FRAME_DASHBOARD.setBounds(100, 100, 600, 400);
+		FRAME_DASHBOARD.setBounds(100, 100, 610, 410);
 		FRAME_DASHBOARD.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		FRAME_DASHBOARD.getContentPane().setLayout(null);
 
@@ -123,7 +127,7 @@ public class Dashboard {
 		PANEL.add(DISPLAY_USERNAME);
 
 		BUTTON_TOGGLE_REINVESTOR = new JToggleButton("Toggle Reinvestor");
-		BUTTON_TOGGLE_REINVESTOR.setBounds(377, 7, 205, 29);
+		BUTTON_TOGGLE_REINVESTOR.setBounds(377, 7, 200, 29);
 		BUTTON_TOGGLE_REINVESTOR.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
 				if (BUTTON_TOGGLE_REINVESTOR.isSelected()) {
@@ -166,7 +170,7 @@ public class Dashboard {
 		PANEL.add(DISPLAY_STATUS);
 
 		PANEL_TAB = new JTabbedPane(JTabbedPane.TOP);
-		PANEL_TAB.setBounds(0, 40, 588, 326);
+		PANEL_TAB.setBounds(6, 40, 576, 320);
 		PANEL.add(PANEL_TAB);
 
 		TAB_SETTINGS = new JPanel();
@@ -243,7 +247,7 @@ public class Dashboard {
 		TAB_SETTINGS.add(INPUT_MIN_NMC);
 
 		BUTTON_SAVE = new JButton("Save Settings");
-		BUTTON_SAVE.setBounds(6, 245, 134, 29);
+		BUTTON_SAVE.setBounds(6, 234, 134, 29);
 		BUTTON_SAVE.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
 				updateSettings();
@@ -257,7 +261,7 @@ public class Dashboard {
 		PANEL_TAB.addTab("Information", null, TAB_INFO, null);
 
 		DISPLAY_BALANCE = new JTextPane();
-		DISPLAY_BALANCE.setBackground(SystemColor.window);
+		DISPLAY_BALANCE.setBackground(UIManager.getColor("Panel.background"));
 		DISPLAY_BALANCE.setFont(new Font("Monospaced", Font.PLAIN, 13));
 		DISPLAY_BALANCE.setEditable(false);
 		DISPLAY_BALANCE.setBounds(6, 34, 256, 120);
@@ -268,66 +272,101 @@ public class Dashboard {
 		TAB_INFO.add(LABEL_BALANCE);
 
 		LABEL_API_CALLS = new JLabel("API Calls");
-		LABEL_API_CALLS.setBounds(274, 12, 61, 16);
+		LABEL_API_CALLS.setHorizontalAlignment(SwingConstants.LEFT);
+		LABEL_API_CALLS.setBounds(274, 10, 58, 16);
 		TAB_INFO.add(LABEL_API_CALLS);
 
 		DISPLAY_API_CALLS = new JTextField();
+		DISPLAY_API_CALLS.setFont(new Font("Lucida Grande", Font.PLAIN, 12));
 		DISPLAY_API_CALLS.setHorizontalAlignment(SwingConstants.LEFT);
 		DISPLAY_API_CALLS.setEditable(false);
-		DISPLAY_API_CALLS.setBounds(347, 6, 214, 28);
-		DISPLAY_API_CALLS.setColumns(10);
+		DISPLAY_API_CALLS.setBounds(344, 6, 211, 24);
+		DISPLAY_API_CALLS.setColumns(9);
 		TAB_INFO.add(DISPLAY_API_CALLS);
 
 		LABEL_ORDERS = new JLabel("Orders");
-		LABEL_ORDERS.setBounds(274, 92, 61, 16);
+		LABEL_ORDERS.setHorizontalAlignment(SwingConstants.LEFT);
+		LABEL_ORDERS.setBounds(274, 154, 58, 16);
 		TAB_INFO.add(LABEL_ORDERS);
 
 		DISPLAY_ORDERS = new JTextField();
+		DISPLAY_ORDERS.setFont(new Font("Lucida Grande", Font.PLAIN, 12));
 		DISPLAY_ORDERS.setHorizontalAlignment(SwingConstants.LEFT);
 		DISPLAY_ORDERS.setEditable(false);
-		DISPLAY_ORDERS.setBounds(347, 86, 214, 28);
-		DISPLAY_ORDERS.setColumns(10);
+		DISPLAY_ORDERS.setBounds(344, 150, 211, 24);
+		DISPLAY_ORDERS.setColumns(9);
 		TAB_INFO.add(DISPLAY_ORDERS);
 
 		DISPLAY_CANCELED = new JTextField();
+		DISPLAY_CANCELED.setFont(new Font("Lucida Grande", Font.PLAIN, 12));
 		DISPLAY_CANCELED.setHorizontalAlignment(SwingConstants.LEFT);
 		DISPLAY_CANCELED.setEditable(false);
-		DISPLAY_CANCELED.setBounds(347, 126, 214, 28);
-		DISPLAY_CANCELED.setColumns(10);
+		DISPLAY_CANCELED.setBounds(344, 188, 211, 24);
+		DISPLAY_CANCELED.setColumns(9);
 		TAB_INFO.add(DISPLAY_CANCELED);
 
 		LABEL_CANCELED = new JLabel("Canceled");
-		LABEL_CANCELED.setBounds(274, 132, 61, 16);
+		LABEL_CANCELED.setHorizontalAlignment(SwingConstants.LEFT);
+		LABEL_CANCELED.setBounds(274, 192, 58, 16);
 		TAB_INFO.add(LABEL_CANCELED);
 
 		DISPLAY_PENDING = new JTextField();
+		DISPLAY_PENDING.setFont(new Font("Lucida Grande", Font.PLAIN, 12));
 		DISPLAY_PENDING.setHorizontalAlignment(SwingConstants.LEFT);
 		DISPLAY_PENDING.setEditable(false);
-		DISPLAY_PENDING.setBounds(347, 166, 214, 28);
-		DISPLAY_PENDING.setColumns(10);
+		DISPLAY_PENDING.setBounds(344, 228, 211, 24);
+		DISPLAY_PENDING.setColumns(9);
 		TAB_INFO.add(DISPLAY_PENDING);
 
 		LABEL_PENDING = new JLabel("Pending");
-		LABEL_PENDING.setBounds(274, 172, 61, 16);
+		LABEL_PENDING.setHorizontalAlignment(SwingConstants.LEFT);
+		LABEL_PENDING.setBounds(274, 232, 58, 16);
 		TAB_INFO.add(LABEL_PENDING);
 
 		DISPLAY_START_TIME = new JTextField();
+		DISPLAY_START_TIME.setFont(new Font("Lucida Grande", Font.PLAIN, 12));
 		DISPLAY_START_TIME.setHorizontalAlignment(SwingConstants.LEFT);
 		DISPLAY_START_TIME.setEditable(false);
-		DISPLAY_START_TIME.setBounds(347, 46, 214, 28);
-		DISPLAY_START_TIME.setColumns(10);
+		DISPLAY_START_TIME.setBounds(344, 78, 211, 24);
+		DISPLAY_START_TIME.setColumns(9);
 		TAB_INFO.add(DISPLAY_START_TIME);
 
 		LABEL_START_TIME = new JLabel("Start");
-		LABEL_START_TIME.setBounds(274, 52, 61, 16);
+		LABEL_START_TIME.setHorizontalAlignment(SwingConstants.LEFT);
+		LABEL_START_TIME.setBounds(274, 82, 58, 16);
 		TAB_INFO.add(LABEL_START_TIME);
+
+		DISPLAY_LAST_ACTIVITY = new JTextField();
+		DISPLAY_LAST_ACTIVITY
+				.setFont(new Font("Lucida Grande", Font.PLAIN, 12));
+		DISPLAY_LAST_ACTIVITY.setEditable(false);
+		DISPLAY_LAST_ACTIVITY.setBounds(344, 42, 211, 24);
+		TAB_INFO.add(DISPLAY_LAST_ACTIVITY);
+		DISPLAY_LAST_ACTIVITY.setColumns(9);
+
+		LABEL_LAST_ACTIVITY = new JLabel("Last");
+		LABEL_LAST_ACTIVITY.setHorizontalAlignment(SwingConstants.LEFT);
+		LABEL_LAST_ACTIVITY.setBounds(274, 46, 58, 16);
+		TAB_INFO.add(LABEL_LAST_ACTIVITY);
+
+		DISPLAY_DURATION = new JTextField();
+		DISPLAY_DURATION.setFont(new Font("Lucida Grande", Font.PLAIN, 12));
+		DISPLAY_DURATION.setEditable(false);
+		DISPLAY_DURATION.setBounds(344, 114, 211, 24);
+		TAB_INFO.add(DISPLAY_DURATION);
+		DISPLAY_DURATION.setColumns(9);
+
+		LABEL_DURATION = new JLabel("Duration");
+		LABEL_DURATION.setHorizontalAlignment(SwingConstants.LEFT);
+		LABEL_DURATION.setBounds(274, 118, 58, 16);
+		TAB_INFO.add(LABEL_DURATION);
 
 		TAB_LOG = new JPanel();
 		TAB_LOG.setLayout(null);
 		PANEL_TAB.addTab("Log", null, TAB_LOG, null);
 
 		SCROLLPANE = new JScrollPane();
-		SCROLLPANE.setBounds(0, 0, 567, 280);
+		SCROLLPANE.setBounds(0, 0, 555, 274);
 		TAB_LOG.add(SCROLLPANE);
 
 		DISPLAY_LOG = new JTextArea();
@@ -343,38 +382,44 @@ public class Dashboard {
 
 		TEXTPANE_ABOUT = new JTextPane();
 		TEXTPANE_ABOUT.setEditable(false);
-		TEXTPANE_ABOUT.setBackground(SystemColor.window);
+		TEXTPANE_ABOUT.setBackground(UIManager.getColor("Panel.background"));
 		TEXTPANE_ABOUT.setFont(new Font("Lucida Grande", Font.PLAIN, 14));
 		TEXTPANE_ABOUT
-				.setText("This program was created to automate profit reinvestment from the Cex.io cloud mining platform. This is freeware distributed under the MIT open-source license. If this program has helped you at all, please donate to motivate me to continue with development. All feature/update suggestions are welcome on the projects Github page (https://github.com/zackurben/cex.io-reinvestor).");
-		TEXTPANE_ABOUT.setBounds(6, 6, 555, 90);
+				.setText("This program was created to automate profit"
+						+ " reinvestment from the Cex.io cloud mining platform. "
+						+ "This is freeware distributed under the MIT open-source"
+						+ " license. If this program has helped you at all, please"
+						+ " donate to motivate me to continue with development. All"
+						+ " feature/update suggestions are welcome on the projects "
+						+ "Github page (https://github.com/zackurben/cex.io-reinvestor).");
+		TEXTPANE_ABOUT.setBounds(6, 6, 543, 112);
 		TAB_ABOUT.add(TEXTPANE_ABOUT);
 
 		TEXTPANE_BTC = new JTextPane();
 		TEXTPANE_BTC.setEditable(false);
-		TEXTPANE_BTC.setBackground(SystemColor.window);
+		TEXTPANE_BTC.setBackground(UIManager.getColor("Panel.background"));
 		TEXTPANE_BTC.setFont(new Font("Lucida Grande", Font.PLAIN, 14));
 		TEXTPANE_BTC
 				.setText("Motivation BTC @ 1HvXfXRP9gZqHPkQUCPKmt5wKyXDMADhvQ");
-		TEXTPANE_BTC.setBounds(6, 108, 555, 18);
+		TEXTPANE_BTC.setBounds(6, 130, 543, 22);
 		TAB_ABOUT.add(TEXTPANE_BTC);
 
 		TEXTPANE_CEX = new JTextPane();
 		TEXTPANE_CEX.setEditable(false);
-		TEXTPANE_CEX.setBackground(SystemColor.window);
+		TEXTPANE_CEX.setBackground(UIManager.getColor("Panel.background"));
 		TEXTPANE_CEX.setFont(new Font("Lucida Grande", Font.PLAIN, 14));
 		TEXTPANE_CEX
 				.setText("Cex.io Referral @ https://cex.io/r/0/kannibal3/0/");
-		TEXTPANE_CEX.setBounds(6, 138, 555, 18);
+		TEXTPANE_CEX.setBounds(6, 164, 543, 22);
 		TAB_ABOUT.add(TEXTPANE_CEX);
 
 		TEXTPANE_CRYPTSY = new JTextPane();
 		TEXTPANE_CRYPTSY.setEditable(false);
-		TEXTPANE_CRYPTSY.setBackground(SystemColor.window);
+		TEXTPANE_CRYPTSY.setBackground(UIManager.getColor("Panel.background"));
 		TEXTPANE_CRYPTSY
 				.setText("Cryptsy Trade   @ e5447842f0b6605ad45ced133b4cdd5135a4838c");
 		TEXTPANE_CRYPTSY.setFont(new Font("Lucida Grande", Font.PLAIN, 14));
-		TEXTPANE_CRYPTSY.setBounds(6, 168, 555, 18);
+		TEXTPANE_CRYPTSY.setBounds(6, 198, 543, 22);
 		TAB_ABOUT.add(TEXTPANE_CRYPTSY);
 	}
 

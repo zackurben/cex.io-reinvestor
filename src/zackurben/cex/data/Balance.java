@@ -4,7 +4,7 @@
  * under the Apache V2 License, which can be found at: gson/LICENSE.txt
  * 
  * Balance.java
- * Version : 1.0.0
+ * Version : 1.0.2
  * Author : Zack Urben
  * Contact : zackurben@gmail.com
  * Creation : 12/31/13
@@ -28,15 +28,20 @@ public class Balance {
 	public Currency IXC;
 	public Currency DVC;
 	public Currency NMC;
+	public String error = "";
 
 	/**
 	 * Overide the default toString method to give basic object data dump.
 	 */
 	public String toString() {
-		return "{" + this.timestamp + ":" + this.username + ":"
-				+ this.BTC.toString() + ":" + this.GHS.toString() + ":"
-				+ this.IXC.toString() + ":" + this.DVC.toString() + ":"
-				+ this.NMC.toString() + "}";
+		if (error.compareToIgnoreCase("") == 0) {
+			return "{" + this.timestamp + ":" + this.username + ":"
+					+ this.BTC.toString() + ":" + this.GHS.toString() + ":"
+					+ this.IXC.toString() + ":" + this.DVC.toString() + ":"
+					+ this.NMC.toString() + "}";
+		} else {
+			return "{error:" + this.error + "}";
+		}
 	}
 
 	/**
