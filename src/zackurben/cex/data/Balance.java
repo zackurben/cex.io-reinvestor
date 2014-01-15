@@ -4,7 +4,7 @@
  * under the Apache V2 License, which can be found at: gson/LICENSE.txt
  * 
  * Balance.java
- * Version : 1.0.2
+ * Version : 1.0.3
  * Author : Zack Urben
  * Contact : zackurben@gmail.com
  * Creation : 12/31/13
@@ -19,6 +19,8 @@
  */
 
 package zackurben.cex.data;
+
+import java.math.BigDecimal;
 
 public class Balance {
 	public long timestamp;
@@ -49,14 +51,21 @@ public class Balance {
 	 * objects.
 	 */
 	public class Currency {
-		public float available;
-		public float orders;
+		public BigDecimal available = new BigDecimal("0.00000000");
+		public BigDecimal orders = new BigDecimal("0.00000000");
 
 		/**
 		 * Overide the default toString method to give basic object data dump.
 		 */
 		public String toString() {
-			return "[" + this.available + ":" + this.orders + "]";
+			String output = "[" + this.available.toPlainString();
+
+			if (this.orders != null) {
+				output += ":" + this.orders.toPlainString();
+			}
+			output += "]";
+
+			return output;
 		}
 	}
 }

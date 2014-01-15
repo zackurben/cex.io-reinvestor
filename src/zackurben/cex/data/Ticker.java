@@ -4,7 +4,7 @@
  * under the Apache V2 License, which can be found at: gson/LICENSE.txt
  * 
  * Ticker.java
- * Version : 1.0.0
+ * Version : 1.0.3
  * Author : Zack Urben
  * Contact : zackurben@gmail.com
  * Creation : 12/31/13
@@ -20,12 +20,14 @@
 
 package zackurben.cex.data;
 
+import java.math.BigDecimal;
+
 public class Ticker {
 	public long timestamp;
-	public float low;
-	public float high;
-	public float last;
-	public float volume;
-	public float bid;
-	public float ask;
+	public BigDecimal low = new BigDecimal("0.00000000");
+	public BigDecimal high = new BigDecimal("0.00000000");
+	public BigDecimal last = new BigDecimal("0.00000000");
+	public BigDecimal volume = new BigDecimal("0.00000000");
+	public BigDecimal bid = new BigDecimal("0.00000000");
+	public BigDecimal ask = new BigDecimal("0.00000000");
 }

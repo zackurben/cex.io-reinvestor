@@ -1,3 +1,1 @@
 Program TODO:
- - Add program run-time to GUI version. 
- - Update the size of text boxes, in GUI version, due to MS Windows panel Sizing.

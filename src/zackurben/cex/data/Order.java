@@ -4,7 +4,7 @@
  * under the Apache V2 License, which can be found at: gson/LICENSE.txt
  * 
  * Order.java
- * Version : 1.0.2
+ * Version : 1.0.3
  * Author : Zack Urben
  * Contact : zackurben@gmail.com
  * Creation : 12/31/13
@@ -20,16 +20,16 @@
 
 package zackurben.cex.data;
 
+import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.text.DecimalFormat;
 
 public class Order {
 	public int id;
 	public long time;
-	public float pending;
-	public float amount;
+	public BigDecimal pending = new BigDecimal("0.00000000");
+	public BigDecimal amount = new BigDecimal("0.00000000");
 	public String type;
-	public float price;
+	public BigDecimal price = new BigDecimal("0.00000000");
 	public String error = "";
 
 	/**
@@ -39,10 +39,12 @@ public class Order {
 	 * @return String representation of the float, up to 8 decimal places,
 	 *         rounded down.
 	 */
-	public String formatNumber(float input) {
-		DecimalFormat df = new DecimalFormat("###0.00000000");
-		df.setRoundingMode(RoundingMode.DOWN);
-		return df.format(input);
+	public String formatNumber(BigDecimal input) {
+		// DecimalFormat df = new DecimalFormat("###0.00000000");
+		// df.setRoundingMode(RoundingMode.DOWN);
+		// return df.format(input);
+		input = input.setScale(8, RoundingMode.DOWN);
+		return input.toString();
 	}
 
 	/**

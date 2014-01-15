@@ -4,7 +4,7 @@
  * under the Apache V2 License, which can be found at: gson/LICENSE.txt
  * 
  * Dashboard.java
- * Version : 1.0.2
+ * Version : 1.0.3
  * Author : Zack Urben
  * Contact : zackurben@gmail.com
  * Creation : 12/31/13
@@ -33,6 +33,8 @@ import javax.swing.JTextPane;
 import java.awt.Font;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Date;
 import java.util.Scanner;
 import javax.swing.JScrollPane;
@@ -87,6 +89,8 @@ public class Dashboard {
 	protected JTextPane TEXTPANE_CEX;
 	protected JTextPane TEXTPANE_CRYPTSY;
 	protected JScrollPane SCROLLPANE;
+	protected long NUM_START_TIME;
+	protected long NUM_LAST_ACTIVITY;
 	protected Reinvestor user;
 
 	/**
@@ -463,13 +467,19 @@ public class Dashboard {
 	 */
 	private void updateSettings() {
 		this.user.BTC.active = CHECKBOX_BTC.isSelected();
-		this.user.BTC.reserve = Float.valueOf(INPUT_RESERVE_BTC.getText());
-		this.user.BTC.max = Float.valueOf(INPUT_MAX_BTC.getText());
-		this.user.BTC.min = Float.valueOf(INPUT_MIN_BTC.getText());
+		this.user.BTC.reserve = new BigDecimal(INPUT_RESERVE_BTC.getText())
+				.setScale(8, RoundingMode.DOWN);
+		this.user.BTC.max = new BigDecimal(INPUT_MAX_BTC.getText()).setScale(8,
+				RoundingMode.DOWN);
+		this.user.BTC.min = new BigDecimal(INPUT_MIN_BTC.getText()).setScale(8,
+				RoundingMode.DOWN);
 
 		this.user.NMC.active = CHECKBOX_NMC.isSelected();
-		this.user.NMC.reserve = Float.valueOf(INPUT_RESERVE_NMC.getText());
-		this.user.NMC.max = Float.valueOf(INPUT_MAX_NMC.getText());
-		this.user.NMC.min = Float.valueOf(INPUT_MIN_NMC.getText());
+		this.user.NMC.reserve = new BigDecimal(INPUT_RESERVE_NMC.getText())
+				.setScale(8, RoundingMode.DOWN);
+		this.user.NMC.max = new BigDecimal(INPUT_MAX_NMC.getText()).setScale(8,
+				RoundingMode.DOWN);
+		this.user.NMC.min = new BigDecimal(INPUT_MIN_NMC.getText()).setScale(8,
+				RoundingMode.DOWN);
 	}
 }

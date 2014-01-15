@@ -13,3 +13,8 @@
  - Added program runtime to Information Tab.
  - Minor GUI tweaks to fix the interface on Windows machines.
  - Code clean up.
+
+1.0.3
+ - Converted floats to BigDecimals for precision
+ - Fixed bug where ReinvestorThread would crash due to floats being converted to scientific notation.
+ - Updated GUI Display of last activity and start time.

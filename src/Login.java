@@ -4,7 +4,7 @@
  * under the Apache V2 License, which can be found at: gson/LICENSE.txt
  * 
  * Login.java
- * Version : 1.0.2
+ * Version : 1.0.3
  * Author : Zack Urben
  * Contact : zackurben@gmail.com
  * Creation : 12/31/13
@@ -87,7 +87,7 @@ public class Login {
 		LABEL_VERSION.setBounds(312, 167, 47, 16);
 		PANEL.add(LABEL_VERSION);
 
-		LABEL_VERSION_NUMBER = new JLabel("1.0.2");
+		LABEL_VERSION_NUMBER = new JLabel("1.0.3");
 		LABEL_VERSION_NUMBER.setEnabled(false);
 		LABEL_VERSION_NUMBER.setBounds(371, 167, 61, 16);
 		PANEL.add(LABEL_VERSION_NUMBER);

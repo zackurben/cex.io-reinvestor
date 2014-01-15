@@ -4,7 +4,7 @@
  * under the Apache V2 License, which can be found at: gson/LICENSE.txt
  * 
  * Coin.java
- * Version : 1.0.0
+ * Version : 1.0.3
  * Author : Zack Urben
  * Contact : zackurben@gmail.com
  * Creation : 12/31/13
@@ -20,11 +20,13 @@
 
 package zackurben.cex.data;
 
+import java.math.BigDecimal;
+
 public class Coin {
 	public boolean active;
-	public float reserve;
-	public float max;
-	public float min;
+	public BigDecimal reserve = new BigDecimal("0.00000000");
+	public BigDecimal max = new BigDecimal("0.00000000");
+	public BigDecimal min = new BigDecimal("0.00000000");
 	public String ticker;
 
 	/**
@@ -37,8 +39,8 @@ public class Coin {
 	 * @param min (Float) - The minimum amount allowed to pay for 1 GHS/COIN
 	 * @param ticker (String) - The pair ticker for Cex.io
 	 */
-	public Coin(Boolean active, float reserve, float max, float min,
-			String ticker) {
+	public Coin(Boolean active, BigDecimal reserve, BigDecimal max,
+			BigDecimal min, String ticker) {
 		this.active = active;
 		this.reserve = reserve;
 		this.max = max;
@@ -50,7 +52,8 @@ public class Coin {
 	 * Overide the default toString method to give basic object data dump.
 	 */
 	public String toString() {
-		return "{" + this.active + ":" + this.reserve + ":" + this.max + ":"
-				+ this.min + ":" + this.ticker + "}";
+		return "{" + this.active + ":" + this.reserve.toPlainString() + ":"
+				+ this.max.toPlainString() + ":" + this.min.toPlainString()
+				+ ":" + this.ticker + "}";
 	}
 }
