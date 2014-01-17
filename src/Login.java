@@ -87,7 +87,7 @@ public class Login {
 		LABEL_VERSION.setBounds(312, 167, 47, 16);
 		PANEL.add(LABEL_VERSION);
 
-		LABEL_VERSION_NUMBER = new JLabel("1.0.3");
+		LABEL_VERSION_NUMBER = new JLabel("1.0.4");
 		LABEL_VERSION_NUMBER.setEnabled(false);
 		LABEL_VERSION_NUMBER.setBounds(371, 167, 61, 16);
 		PANEL.add(LABEL_VERSION_NUMBER);

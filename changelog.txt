@@ -18,3 +18,6 @@
  - Converted floats to BigDecimals for precision
  - Fixed bug where ReinvestorThread would crash due to floats being converted to scientific notation.
  - Updated GUI Display of last activity and start time.
+
+1.0.4
+ - Updated the bundled API version to 1.0.9. This correctly handles an exception thrown, if the API is down.
