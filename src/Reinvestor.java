@@ -4,7 +4,7 @@
  * under the Apache V2 License, which can be found at: gson/LICENSE.txt
  * 
  * Reinvestor.java
- * Version : 1.0.3
+ * Version : 1.0.5
  * Author : Zack Urben
  * Contact : zackurben@gmail.com
  * Creation : 12/31/13
@@ -588,7 +588,7 @@ public class Reinvestor extends CexAPI {
 					this.user.nonce = Integer.valueOf((int) (System
 							.currentTimeMillis() / 1000));
 					out("Error 0x1: " + this.user.balance.toString());
-					log("error", "Error 0x1:\n" + this.user.balance.toString());
+					log("error", "Error 0x1:\n" + e.getStackTrace().toString());
 				} finally {
 					try {
 						if (this.user.debug) {

@@ -4,7 +4,7 @@
  * under the Apache V2 License, which can be found at: gson/LICENSE.txt
  * 
  * Dashboard.java
- * Version : 1.0.3
+ * Version : 1.0.5
  * Author : Zack Urben
  * Contact : zackurben@gmail.com
  * Creation : 12/31/13
@@ -40,6 +40,10 @@ import java.util.Scanner;
 import javax.swing.JScrollPane;
 import javax.swing.JButton;
 import javax.swing.UIManager;
+
+import zackurben.cex.data.Balance;
+
+import com.google.gson.Gson;
 
 public class Dashboard {
 	protected JFrame FRAME_DASHBOARD;
@@ -102,6 +106,11 @@ public class Dashboard {
 		this.user = new Reinvestor(user, apiKey, apiSecret, this);
 		this.user.start();
 		loadSettings();
+		
+		// query user balance
+		this.user.balance = new Gson().fromJson(
+				this.user.execute("balance", new String[] {}),
+				Balance.class);
 	}
 
 	/**

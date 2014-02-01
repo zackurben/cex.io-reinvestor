@@ -21,3 +21,7 @@
 
 1.0.4
  - Updated the bundled API version to 1.0.9. This correctly handles an exception thrown, if the API is down.
+
+1.0.5
+ - Added balance query on program start to determine account balances.
+ - Updated error logging for 0x1 messages.
