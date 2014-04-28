@@ -43,7 +43,6 @@ import javax.swing.JButton;
 import javax.swing.UIManager;
 import zackurben.cex.data.Balance;
 import com.google.gson.Gson;
-import java.awt.SystemColor;
 
 public class Dashboard {
     protected JFrame FRAME_DASHBOARD;
