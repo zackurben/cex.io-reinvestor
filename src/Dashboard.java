@@ -410,7 +410,7 @@ public class Dashboard {
             .setText("Scrypt Referral  @ http://scrypt.cc?ref=baaah");
         TEXTPANE_SCRYPT.setFont(new Font("Lucida Grande", Font.PLAIN, 14));
         TEXTPANE_SCRYPT.setEditable(false);
-        TEXTPANE_SCRYPT.setBackground(SystemColor.window);
+        TEXTPANE_SCRYPT.setBackground(UIManager.getColor("Panel.background"));
         TEXTPANE_SCRYPT.setBounds(6, 198, 543, 22);
         TAB_ABOUT.add(TEXTPANE_SCRYPT);
     }
