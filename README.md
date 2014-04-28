@@ -4,15 +4,16 @@ the MIT license and utilized the Google Gson project licensed under the Apache V
 at: gson/LICENSE.txt.
 
 ## Contact
-* Author	: Zack Urben
-* Contact	: zackurben@gmail.com
+* Author    : Zack Urben
+* Contact   : zackurben@gmail.com
 
 ### Support
 If you would like to support the development of this project, please spread the word and donate!
 
-* Motivation BTC	@ 1HvXfXRP9gZqHPkQUCPKmt5wKyXDMADhvQ
-* Cex.io referral	@ https://cex.io/r/0/kannibal3/0/
-* Cryptsy Trade Key	@ e5447842f0b6605ad45ced133b4cdd5135a4838c
+* Motivation BTC    @ 1HvXfXRP9gZqHPkQUCPKmt5wKyXDMADhvQ
+* Cex.io referral   @ https://cex.io/r/0/kannibal3/0/
+* Scrypt Referral   @ http://scrypt.cc?ref=baaah
+* Cryptsy Trade Key @ e5447842f0b6605ad45ced133b4cdd5135a4838c
 * Other donations accepted via email request!
 
 ### Features
@@ -105,7 +106,7 @@ started, the settings will be automatically saved.
 ```
 
 ### Information
-This tab is mostly stats and debug information, but its interesting to see, so I left it in.
+This tab is mostly statistics and debug information, but its interesting to see, so I left it in.
 
 #### Balance
 
