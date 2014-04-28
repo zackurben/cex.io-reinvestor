@@ -25,3 +25,10 @@
 1.0.5
  - Added balance query on program start to determine account balances.
  - Updated error logging for 0x1 messages.
+
+1.0.6
+ - Updated the bundled API version to 1.0.10. This correctly handles protected API calls again.
+ - Updated code format.
+ - Updated code comments.
+ - Updated Order.toString() format.
+ - Replaced 'tab' characters with 4 'spaces', for a more uniform IDE experience.
