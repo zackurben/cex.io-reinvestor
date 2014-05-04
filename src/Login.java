@@ -4,7 +4,7 @@
  * under the Apache V2 License, which can be found at: gson/LICENSE.txt
  * 
  * Login.java
- * Version  : 1.0.6
+ * Version  : 1.1.0
  * Author   : Zack Urben
  * Contact  : zackurben@gmail.com
  * Creation : 12/31/13
@@ -53,7 +53,7 @@ public class Login {
      */
     private void initialize() {
         FRAME_LOGIN = new JFrame();
-        FRAME_LOGIN.setTitle("Cex.io Reinvestor v1.0.6 - By Zack Urben");
+        FRAME_LOGIN.setTitle("Cex.io Reinvestor v1.1.0 - By Zack Urben");
         FRAME_LOGIN.setBounds(100, 100, 450, 235);
         FRAME_LOGIN.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         FRAME_LOGIN.getContentPane().setLayout(null);
@@ -83,7 +83,7 @@ public class Login {
         LABEL_VERSION.setBounds(312, 167, 47, 16);
         PANEL.add(LABEL_VERSION);
 
-        LABEL_VERSION_NUMBER = new JLabel("1.0.6");
+        LABEL_VERSION_NUMBER = new JLabel("1.1.0");
         LABEL_VERSION_NUMBER.setEnabled(false);
         LABEL_VERSION_NUMBER.setBounds(371, 167, 61, 16);
         PANEL.add(LABEL_VERSION_NUMBER);
