@@ -32,3 +32,9 @@
  - Updated code comments.
  - Updated Order.toString() format.
  - Replaced 'tab' characters with 4 'spaces', for a more uniform IDE experience.
+
+1.1.0
+ - Fixed the infamous 0x1 error.
+ - Added support for trading fees (0.5% for future-proofing) and their logging (albeit not 100% accurate currently).
+ - Added support for all non-temporary CEX currencies.
+ - Minimal GUI changes to compensate for increased balance output.
