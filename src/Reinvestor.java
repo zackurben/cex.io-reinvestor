@@ -4,7 +4,7 @@
  * under the Apache V2 License, which can be found at: gson/LICENSE.txt
  * 
  * Reinvestor.java
- * Version  : 1.0.6
+ * Version  : 1.1.0
  * Author   : Zack Urben
  * Contact  : zackurben@gmail.com
  * Creation : 12/31/13
@@ -216,19 +216,45 @@ public class Reinvestor extends CexAPI {
      * @return String representation of the formatted account balance.
      */
     public String formatBalance(String input) {
+        String output = "";
         this.balance = new Gson().fromJson(input, Balance.class);
 
-        return "Pair Available   Order" + "\nBTC  "
-            + formatNumber(balance.BTC.available) + "  "
-            + formatNumber(balance.BTC.orders) + "\nGHS  "
-            + formatNumber(balance.GHS.available) + "  "
-            + formatNumber(balance.GHS.orders) + "\nIXC  "
-            + formatNumber(balance.IXC.available) + "  "
-            // + formatNumber(balance.IXC.orders) // not available for trade
-            + "\nDVC  " + formatNumber(balance.DVC.available) + "  "
-            // + formatNumber(balance.DVC.orders) // not available for trade
-            + "\nNMC  " + formatNumber(balance.NMC.available) + "  "
-            + formatNumber(balance.NMC.orders) + "\n";
+        String label[] = new String[] { "BTC ", "LTC ", "DOGE", "FTC ", "AUR ",
+            "NMC ", "IXC ", "DVC ", "GHS " };
+        Balance.Currency currency[] = new Balance.Currency[] {
+            this.balance.BTC, this.balance.LTC, this.balance.DOGE,
+            this.balance.FTC, this.balance.AUR, this.balance.NMC,
+            this.balance.IXC, this.balance.DVC, this.balance.GHS };
+
+        int formatted = 0;
+        output += "Pair Available   Order";
+        for (int a = 0; a < currency.length; a++) {
+            output += "\n" + label[a] + " ";
+
+            if (currency[a] != null
+                && currency[a].available != null
+                && currency[a].available.compareTo(BigDecimal.ZERO.setScale(8)) == 1) {
+                output += formatNumber(currency[a].available);
+                formatted++;
+            } else {
+                output += "0.00000000";
+            }
+            output += "  ";
+            if (currency[a] != null
+                && currency[a].orders != null
+                && currency[a].orders.compareTo(BigDecimal.ZERO.setScale(8)) == 1) {
+                output += formatNumber(currency[a].orders);
+                formatted++;
+            } else {
+                output += "0.00000000";
+            }
+        }
+        
+        if(formatted == 0) {
+            output = "There was a problem formatting the account balances, please wait until the next API call for an update.";
+        }
+
+        return output;
     }
 
     /**
@@ -458,10 +484,8 @@ public class Reinvestor extends CexAPI {
                     temp = input.nextLine().substring(0, 1);
                     if (temp.compareToIgnoreCase("b") == 0) {
                         out("\n"
-                            + this.user
-                                .formatBalance("\n"
-                                    + this.user.execute("balance",
-                                        new String[] {})), "\n");
+                            + this.user.formatBalance(this.user.execute(
+                                "balance", new String[] {})), "\n");
                     } else if (temp.compareToIgnoreCase("1") == 0) {
                         out("\n"
                             + this.user.formatTicker(this.user.execute(
@@ -712,11 +736,6 @@ public class Reinvestor extends CexAPI {
             this.user.balance = new Gson().fromJson(this.user.execute(
                 "balance", new String[] {}), Balance.class);
 
-            /*
-             * out("Reinvestor: Current " + coin.ticker.split("/")[1]
-             * + " balance: " + formatNumber(currency.available));
-             */
-
             // Make purchases
             if (currency.available.compareTo(coin.reserve) == 1) {
                 Ticker price = new Gson().fromJson(this.user.execute("ticker",
@@ -729,6 +748,14 @@ public class Reinvestor extends CexAPI {
                         .compareTo(coin.min)) == 1)) {
                     // calculate amount to buy
                     BigDecimal amt = (currency.available.subtract(coin.reserve))
+                        .divide(price.last, 8, RoundingMode.DOWN);
+
+                    // subtract 0.5% trading fee (accounting for the
+                    // new fee increase)
+                    BigDecimal fee = (amt.multiply(new BigDecimal("0.005"))
+                        .multiply(price.last)).setScale(8, RoundingMode.UP);
+                    amt = ((currency.available.subtract(coin.reserve))
+                        .subtract(fee))
                         .divide(price.last, 8, RoundingMode.DOWN);
 
                     if (amt.compareTo(new BigDecimal(0.00000001)) == 1) {
@@ -747,6 +774,9 @@ public class Reinvestor extends CexAPI {
                                     + " GHS @ "
                                     + formatNumber(order.price)
                                     + " "
+                                    + "(Fee: "
+                                    + formatNumber(fee)
+                                    + ") "
                                     + coin.ticker
                                     + " (Cost: "
                                     + formatNumber(order.price
@@ -768,6 +798,7 @@ public class Reinvestor extends CexAPI {
                                 out("Reinvestor: Purchased "
                                     + formatNumber(order.amount) + " GHS @ "
                                     + formatNumber(order.price) + " "
+                                    + "(Fee: " + formatNumber(fee) + ") "
                                     + coin.ticker + " (Pending: "
                                     + formatNumber(order.pending)
                                     + " GHS, ID: " + order.id + ")");
