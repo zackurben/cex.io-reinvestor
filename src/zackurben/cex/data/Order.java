@@ -50,9 +50,21 @@ public class Order {
      */
     public String toString() {
         if (error.compareToIgnoreCase("") == 0) {
-            return "{" + this.type + ":" + this.id + ":" + this.time + ":"
-                + formatNumber(this.pending) + ":" + formatNumber(this.amount)
-                + ":" + formatNumber(this.price) + "}";
+            return "{"
+                + this.type
+                + ":"
+                + this.id
+                + ":"
+                + this.time
+                + ":"
+                + formatNumber(this.pending)
+                + ":"
+                + formatNumber(this.amount)
+                + ":"
+                + formatNumber(this.price)
+                + ":"
+                + formatNumber(new BigDecimal(this.price.multiply(this.amount)
+                    .multiply(new BigDecimal("0.005")).toPlainString())) + "}";
         } else {
             return "{error:" + this.error + "}";
         }
