@@ -4,7 +4,7 @@
  * under the Apache V2 License, which can be found at: gson/LICENSE.txt
  * 
  * Balance.java
- * Version  : 1.0.4
+ * Version  : 1.1.0
  * Author   : Zack Urben
  * Contact  : zackurben@gmail.com
  * Creation : 12/31/13
@@ -26,7 +26,7 @@ import java.math.BigDecimal;
 public class Balance {
     public long timestamp;
     public String username;
-    public Currency BTC, GHS, IXC, DVC, NMC;
+    public Currency BTC, LTC, DOGE, FTC, AUR, NMC, IXC, DVC, GHS;
     public String error = "";
 
     /**
@@ -34,10 +34,18 @@ public class Balance {
      */
     public String toString() {
         if (error.compareToIgnoreCase("") == 0) {
-            return "{" + this.timestamp + ":" + this.username + ":"
-                + this.BTC.toString() + ":" + this.GHS.toString() + ":"
-                + this.IXC.toString() + ":" + this.DVC.toString() + ":"
-                + this.NMC.toString() + "}";
+            String output = "{" + this.timestamp + ":" + this.username;
+
+            Currency currency[] = new Currency[] { this.BTC, this.LTC,
+                this.DOGE, this.FTC, this.AUR, this.NMC, this.IXC, this.DVC,
+                this.GHS };
+
+            for (Currency curr : currency) {
+                output += ":" + curr.toString();
+            }
+
+            output += "}";
+            return output;
         } else {
             return "{error:" + this.error + "}";
         }
@@ -59,6 +67,8 @@ public class Balance {
 
             if (this.orders != null) {
                 output += ":" + this.orders.toPlainString();
+            } else {
+                output += ":0.00000000";
             }
             output += "]";
 
