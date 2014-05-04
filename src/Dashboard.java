@@ -4,7 +4,7 @@
  * under the Apache V2 License, which can be found at: gson/LICENSE.txt
  * 
  * Dashboard.java
- * Version  : 1.0.6
+ * Version  : 1.1.0
  * Author   : Zack Urben
  * Contact  : zackurben@gmail.com
  * Creation : 12/31/13
@@ -88,7 +88,8 @@ public class Dashboard {
      */
     private void initialize() {
         FRAME_DASHBOARD = new JFrame();
-        FRAME_DASHBOARD.setTitle("Cex.io Reinvestor v1.0.6 - By Zack Urben");
+        FRAME_DASHBOARD
+            .setTitle("Cex.io Reinvestor v1.1.0 - By Zack Urben");
         FRAME_DASHBOARD.setBounds(100, 100, 610, 410);
         FRAME_DASHBOARD.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         FRAME_DASHBOARD.getContentPane().setLayout(null);
@@ -247,7 +248,7 @@ public class Dashboard {
         DISPLAY_BALANCE.setBackground(UIManager.getColor("Panel.background"));
         DISPLAY_BALANCE.setFont(new Font("Monospaced", Font.PLAIN, 13));
         DISPLAY_BALANCE.setEditable(false);
-        DISPLAY_BALANCE.setBounds(6, 34, 256, 120);
+        DISPLAY_BALANCE.setBounds(6, 34, 256, 218);
         TAB_INFO.add(DISPLAY_BALANCE);
 
         LABEL_BALANCE = new JLabel("Balance");
