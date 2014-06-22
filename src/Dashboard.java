@@ -41,10 +41,13 @@ import java.util.Scanner;
 import javax.swing.JScrollPane;
 import javax.swing.JButton;
 import javax.swing.UIManager;
+
+import utils.Config;
 import zackurben.cex.data.Balance;
 import com.google.gson.Gson;
 
 public class Dashboard {
+	Config cfg = Config.getInstance();
     protected JFrame FRAME_DASHBOARD;
     protected JTextField DISPLAY_USERNAME, DISPLAY_STATUS, INPUT_RESERVE_BTC,
         INPUT_RESERVE_NMC, INPUT_MAX_BTC, INPUT_MAX_NMC, INPUT_MIN_BTC,
@@ -415,39 +418,16 @@ public class Dashboard {
         TAB_ABOUT.add(TEXTPANE_SCRYPT);
     }
 
-    /**
-     * Load settings from 'settings.txt' file, if it exists.
-     * 
-     * settings.txt contents:
-     * username,apiKey,apiSecret,btcActive,btcReserve,btcMax,btcMin,nmcActive,
-     * nmcReserve,nmcMax,nmcMin
-     */
     private void loadSettings() {
-        File file = new File("settings.txt");
-        if (file.exists() && file.isFile()) {
-            try {
-                Scanner input = new Scanner(file).useDelimiter(",");
-                String temp[] = new String[11];
-
-                // ignore first 3 inputs
-                // username,apiKey,apiSecret
-                for (int a = 0; a < temp.length; a++) {
-                    temp[a] = input.next();
-                }
-
-                this.CHECKBOX_BTC.setSelected(Boolean.valueOf(temp[3]));
-                this.INPUT_RESERVE_BTC.setText(temp[4]);
-                this.INPUT_MAX_BTC.setText(temp[5]);
-                this.INPUT_MIN_BTC.setText(temp[6]);
-                this.CHECKBOX_NMC.setSelected(Boolean.valueOf(temp[7]));
-                this.INPUT_RESERVE_NMC.setText(temp[8]);
-                this.INPUT_MAX_NMC.setText(temp[9]);
-                this.INPUT_MIN_NMC.setText(temp[10]);
+                this.CHECKBOX_BTC.setSelected(Boolean.valueOf( cfg.isBTCActive() ));
+                this.INPUT_RESERVE_BTC.setText(cfg.getBTCReserve().toPlainString());
+                this.INPUT_MAX_BTC.setText(cfg.getBTCMax().toPlainString());
+                this.INPUT_MIN_BTC.setText(cfg.getBTCMin().toPlainString());                
+                this.CHECKBOX_NMC.setSelected(Boolean.valueOf( cfg.isNMCActive() ));
+                this.INPUT_RESERVE_NMC.setText(cfg.getNMCReserve().toPlainString());
+                this.INPUT_MAX_NMC.setText(  cfg.getNMCMax().toPlainString() );
+                this.INPUT_MIN_NMC.setText(cfg.getNMCMin().toPlainString());
                 this.user.out("Settings loaded successfully!");
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
-        }
     }
 
     /**

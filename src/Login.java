@@ -31,6 +31,8 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.JButton;
 
+import utils.Config;
+
 public class Login {
     private JFrame FRAME_LOGIN;
     private JTextField INPUT_USERNAME, INPUT_API_KEY, INPUT_API_SECRET;
@@ -45,7 +47,10 @@ public class Login {
     public Login() {
         initialize();
         FRAME_LOGIN.setVisible(true);
-        loadSettings();
+        Config c = Config.getInstance();
+        this.INPUT_USERNAME.setText(c.getUsername());
+        this.INPUT_API_KEY.setText(c.getAPIKey());
+        this.INPUT_API_SECRET.setText(c.getAPISecret());
     }
 
     /**
@@ -120,30 +125,5 @@ public class Login {
         PANEL.add(BUTTON_LOGIN);
     }
 
-    /**
-     * Load settings from 'settings.txt' file, if it exists.
-     * 
-     * settings.txt Example:
-     * username,apiKey,apiSecret,btcActive,btcReserve,btcMax,btcMin,nmcActive,
-     * nmcReserve,nmcMax,nmcMin
-     */
-    private void loadSettings() {
-        File file = new File("settings.txt");
-        if (file.exists() && file.isFile()) {
-            try {
-                Scanner input = new Scanner(file).useDelimiter(",");
-                String temp[] = new String[3];
-
-                for (int a = 0; a < temp.length; a++) {
-                    temp[a] = input.next();
-                }
-
-                this.INPUT_USERNAME.setText(temp[0]);
-                this.INPUT_API_KEY.setText(temp[1]);
-                this.INPUT_API_SECRET.setText(temp[2]);
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
-        }
-    }
+ 
 }

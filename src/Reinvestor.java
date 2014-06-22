@@ -30,6 +30,8 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Scanner;
+
+import utils.Config;
 import zackurben.cex.data.*;
 import zackurben.cex.data.Balance.Currency;
 import com.google.gson.Gson;
@@ -45,6 +47,7 @@ public class Reinvestor extends CexAPI {
     protected ReinvestThread reinvest;
     protected Dashboard gui;
     protected boolean done, debug = false;
+    private Config cfg =null;
 
     /**
      * Reinvestor constructor for Terminal/bash/cmd mode.
@@ -371,69 +374,40 @@ public class Reinvestor extends CexAPI {
     }
 
     /**
-     * Load settings from 'settings.txt' file, if it exists.
-     * 
-     * settings.txt Example:
-     * username,apiKey,apiSecret,btcActive,btcReserve,btcMax,btcMin,nmcActive,
-     * nmcReserve,nmcMax,nmcMin
+     * Load config
      */
     public void loadSettings() {
-        File file = new File("settings.txt");
-        if (file.exists() && file.isFile()) {
-            try {
-                Scanner input = new Scanner(file).useDelimiter(",");
-                String temp[] = new String[11];
-
-                // ignore first 3 inputs
-                // username,apiKey,apiSecret
-                for (int a = 0; a < temp.length; a++) {
-                    temp[a] = input.next();
-                }
-
-                this.BTC.active = Boolean.valueOf(temp[3]);
-                this.BTC.reserve = BigDecimal.valueOf(Double.valueOf(temp[4]));
-                this.BTC.max = BigDecimal.valueOf(Double.valueOf(temp[5]));
-                this.BTC.min = BigDecimal.valueOf(Double.valueOf(temp[6]));
-                this.NMC.active = Boolean.valueOf(temp[7]);
-                this.NMC.reserve = BigDecimal.valueOf(Double.valueOf(temp[8]));
-                this.NMC.max = BigDecimal.valueOf(Double.valueOf(temp[9]));
-                this.NMC.min = BigDecimal.valueOf(Double.valueOf(temp[10]));
-                this.out("Settings loaded successfully!");
-            } catch (FileNotFoundException e) {
-                this.out("Error 0xB.");
-                this.log("error", "Error 0xB:\n" + e.getMessage());
-            }
-        }
+    	cfg = Config.getInstance();
+        this.BTC.active = Boolean.valueOf(cfg.isBTCActive());
+        this.BTC.reserve = cfg.getBTCReserve() ;
+        this.BTC.max = cfg.getBTCMax();
+        this.BTC.min = cfg.getBTCMin();
+        this.NMC.active = Boolean.valueOf(cfg.isNMCActive());
+        this.NMC.reserve = cfg.getNMCReserve();
+        this.NMC.max = cfg.getNMCMax();
+        this.NMC.min =cfg.getNMCMin();
+        this.out("Settings loaded successfully!");
     }
 
     /**
-     * Write user settings to a file, 'settings.txt', which will load the last
-     * settings upon next program start-up.
      */
     public void saveSettings() {
-        PrintWriter write = null;
-        try {
-            write = new PrintWriter(new BufferedWriter(new FileWriter(
-                "settings.txt", false)));
-            String temp = this.username + "," + this.apiKey + ","
-                + this.apiSecret + "," + this.BTC.active + ","
-                + this.BTC.reserve.toPlainString() + ","
-                + this.BTC.max.toPlainString() + ","
-                + this.BTC.min.toPlainString() + "," + this.NMC.active + ","
-                + this.NMC.reserve.toPlainString() + ","
-                + this.NMC.max.toPlainString() + ","
-                + this.NMC.min.toPlainString();
-            write.write(temp);
-            this.out("Settings saved successfully!");
-        } catch (IOException e) {
-            this.out("Error 0xA.");
-            this.log("error", "Error 0xA:\n" + e.getMessage());
-        } finally {
-            if (write != null) {
-                write.close();
-            }
-        }
-    }
+    	cfg = Config.getInstance();
+    	
+    	cfg.setUsername(this.username);
+    	cfg.setAPIKey(this.apiKey);
+    	cfg.setAPISecret(this.apiSecret);
+    	
+    	cfg.setBTCActive( this.BTC.active );
+    	cfg.setBTCReserve(this.BTC.reserve);
+    	cfg.setBTCMax(this.BTC.max);
+    	cfg.setBTCMin(this.BTC.min);
+    	
+    	cfg.setNMCActive(this.NMC.active);
+    	cfg.setNMCReserve(this.NMC.reserve);
+    	cfg.setNMCMax(this.NMC.max);
+    	cfg.setNMCMin(this.NMC.min);
+ }
 
     /**
      * Thread wrapper to process user input, in a separate thread.
