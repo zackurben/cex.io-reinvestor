@@ -562,13 +562,13 @@ public class Reinvestor extends CexAPI {
                     trade_btc = ((this.user.BTC.active)
                         && (this.user.balance != null) && (this.user.BTC.reserve
                         .compareTo(this.user.balance.BTC.available) <= -1) && (this.user.BTC.min_order
-					        .compareTo(this.user.balance.BTC.available) > 0))
+					        .compareTo(this.user.balance.BTC.available) <= -1))
 					        || ((this.user.BTC.active) && (!this.user.pending
                             .isEmpty()));
                     trade_nmc = ((this.user.NMC.active)
                         && (this.user.balance != null) && (this.user.NMC.reserve
                         .compareTo(this.user.balance.NMC.available) <= -1) && (this.user.NMC.min_order
-					        .compareTo(this.user.balance.NMC.available) > 0))
+					        .compareTo(this.user.balance.NMC.available) <= -1))
                         || ((this.user.NMC.active) && (!this.user.pending
                             .isEmpty()));
 

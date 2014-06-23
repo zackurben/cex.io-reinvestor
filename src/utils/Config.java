@@ -15,24 +15,7 @@ import java.util.Properties;
 public class Config {
 	
 	private static Config INSTANCE = null;
-	
-    private String USERNAME;
-    private String API_KEY;
-    private String API_SECRET;
-	private Boolean BTC_active;
-	private Boolean NMC_active;
-	private BigDecimal BTC_reserve;
-	private BigDecimal NMC_reserve;
-	private BigDecimal BTC_max;
-	private BigDecimal NMC_max;
-	private BigDecimal BTC_min;
-	private BigDecimal NMC_min;
-	private BigDecimal BTC_min_order;
-	private BigDecimal NMC_min_order;
-
-	private int threadSleep = 30; // 30 seconds by default between thread loops.
-	
-	private Properties p;
+	private Properties pConfig;
 
 	
     public static Config getInstance() {
@@ -56,25 +39,8 @@ public class Config {
     	if ( f.exists() && f.isFile()) {
         try {
 			FileInputStream file = new FileInputStream(f);
-			this.p = new Properties();
-			p.load(file);
-            this.USERNAME = p.getProperty("username", "");
-			this.API_KEY = p.getProperty("api_key", "");
-			this.API_SECRET = p.getProperty("api_secret", "");
-            
-            this.BTC_active = Boolean.valueOf(p.getProperty("BTC.active", "true"));
-            this.BTC_reserve = BigDecimal.valueOf((Double.valueOf(p.getProperty("BTC.reserve", "0.0"))));
-			this.BTC_max = BigDecimal.valueOf((Double.valueOf(p.getProperty("BTC.max", "0.0"))));
-			this.BTC_min = BigDecimal.valueOf((Double.valueOf(p.getProperty("BTC.min", "0.0"))));
-            this.NMC_active = Boolean.valueOf(p.getProperty("NMC.active", "true"));
-            this.NMC_reserve = BigDecimal.valueOf((Double.valueOf(p.getProperty("NMC.reserve", "0.0"))));
-			this.NMC_max = BigDecimal.valueOf((Double.valueOf(p.getProperty("NMC.max", "0.0"))));
-			this.NMC_min = BigDecimal.valueOf((Double.valueOf(p.getProperty("NMC.min", "0.0"))));
-            
-			this.threadSleep = Integer.valueOf(p.getProperty("Thread.Sleep", "30"));
-			
-			this.BTC_min_order = BigDecimal.valueOf((Double.valueOf(p.getProperty("BTC.min_order", "0.0"))));
-			this.NMC_min_order = BigDecimal.valueOf((Double.valueOf(p.getProperty("NMC.min_order", "0.0"))));
+			this.pConfig = new Properties();
+			pConfig.load(file);
 				
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
@@ -89,63 +55,49 @@ public class Config {
     }
     
     
-  
-	public String getUsername() {
-		return USERNAME;
-	}
-
-
-	public String getAPIKey() {
-		return API_KEY;
-	}
-
-
-	public String getAPISecret() {
-		return API_SECRET;
-	}
-
-
 	public Boolean isBTCActive() {
-		return BTC_active;
+		return Boolean.valueOf(pConfig.getProperty("BTC.active", "true"));
 	}
 
 	public Boolean isNMCActive() {
-		return NMC_active;
+		return Boolean.valueOf(pConfig.getProperty("NMC.active", "true"));
 	}
 
 	public BigDecimal getBTCReserve() {
-		return BTC_reserve;
+		return BigDecimal.valueOf((Double.valueOf(pConfig.getProperty("BTC.reserve", "0.0"))));
 	}
 
 	public BigDecimal getNMCReserve() {
-		return NMC_reserve;
+		return BigDecimal.valueOf((Double.valueOf(pConfig.getProperty("NMC.reserve", "0.0"))));
 	}
 
 	public BigDecimal getBTCMax() {
-		return BTC_max;
+		return BigDecimal.valueOf((Double.valueOf(pConfig.getProperty("BTC.max", "0.0"))));
 	}
+
 
 	public BigDecimal getNMCMax() {
-		return NMC_max;
+		return BigDecimal.valueOf((Double.valueOf(pConfig.getProperty("NMC.max", "0.0"))));
 	}
 
+	
 	public BigDecimal getBTCMin() {
-		return BTC_min;
+		return BigDecimal.valueOf((Double.valueOf(pConfig.getProperty("BTC.min", "0.0"))));
 	}
 
+	
 	public BigDecimal getNMCMin() {
-		return NMC_min;
+		return BigDecimal.valueOf((Double.valueOf(pConfig.getProperty("NMC.min", "0.0"))));
 	}
 
+	
 	public void setBTCActive(boolean active) {
 		FileOutputStream out; 
-		this.BTC_active = active;
-		
 		try {
-			p.setProperty("BTC_active", Boolean.valueOf(active).toString());
+			pConfig.setProperty("BTC.active", Boolean.valueOf(active).toString());
 			File f = new File("reinvestor.properties");
 			out = new FileOutputStream( f );
-			p.store(out, "reinvestor.properties");
+			pConfig.store(out, "reinvestor.properties");
 			}
 		    catch (Exception e ) {
 		        e.printStackTrace();
@@ -154,13 +106,11 @@ public class Config {
 
 	public void setNMCActive(boolean active) {
 		FileOutputStream out; 
-		this.NMC_active = active;
-		
 		try {
-			p.setProperty("NMC_active", Boolean.valueOf(active).toString());
+			pConfig.setProperty("NMC.active", Boolean.valueOf(active).toString());
 			File f = new File("reinvestor.properties");
 			out = new FileOutputStream( f );
-			p.store(out, "reinvestor.properties");
+			pConfig.store(out, "reinvestor.properties");
 			}
 		    catch (Exception e ) {
 		        e.printStackTrace();
@@ -169,44 +119,41 @@ public class Config {
 
 	public void setBTCReserve(BigDecimal reserve) {
 		FileOutputStream out; 
-		this.BTC_reserve = reserve;
-		
 		try {
-			p.setProperty("BTC_reserve", reserve.toPlainString());
+			pConfig.setProperty("BTC.reserve", reserve.toPlainString());
 			File f = new File("reinvestor.properties");
 			out = new FileOutputStream( f );
-			p.store(out, "reinvestor.properties");
+			pConfig.store(out, "reinvestor.properties");
 			}
 		    catch (Exception e ) {
 		        e.printStackTrace();
 		    }		
-		
 	}
+
 
 	public void setBTCMin(BigDecimal min) {
 		FileOutputStream out; 
-		this.BTC_min = min;
 
 		try {
-			p.setProperty("BTC_min", min.toPlainString());
+			pConfig.setProperty("BTC.min", min.toPlainString());
 			File f = new File("reinvestor.properties");
 			out = new FileOutputStream( f );
-			p.store(out, "reinvestor.properties");
+			pConfig.store(out, "reinvestor.properties");
 			}
 		    catch (Exception e ) {
 		        e.printStackTrace();
 		    }
 	}
 
+	
 	public void setBTCMax(BigDecimal max) {
 		FileOutputStream out; 
-		this.BTC_max = max;
 		
 		try {
-			p.setProperty("BTC_max", max.toPlainString());
+			pConfig.setProperty("BTC.max", max.toPlainString());
 			File f = new File("reinvestor.properties");
 			out = new FileOutputStream( f );
-			p.store(out, "reinvestor.properties");
+			pConfig.store(out, "reinvestor.properties");
 			}
 		    catch (Exception e ) {
 		        e.printStackTrace();
@@ -215,12 +162,11 @@ public class Config {
 
 	public void setNMCReserve(BigDecimal reserve) {
 		FileOutputStream out; 
-		this.NMC_reserve = reserve;
 		try {
-			p.setProperty("NMC_reserve", reserve.toPlainString());
+			pConfig.setProperty("NMC.reserve", reserve.toPlainString());
 			File f = new File("reinvestor.properties");
 			out = new FileOutputStream( f );
-			p.store(out, "reinvestor.properties");
+			pConfig.store(out, "reinvestor.properties");
 			}
 		    catch (Exception e ) {
 		        e.printStackTrace();
@@ -229,88 +175,94 @@ public class Config {
 
 	public void setNMCMax(BigDecimal max) {
 		FileOutputStream out; 
-		this.NMC_max = max;
-		
 		try {
-			p.setProperty("NMC_max", max.toPlainString());
+			pConfig.setProperty("NMC.max", max.toPlainString());
 			File f = new File("reinvestor.properties");
 			out = new FileOutputStream( f );
-			p.store(out, "reinvestor.properties");
+			pConfig.store(out, "reinvestor.properties");
 			}
 		    catch (Exception e ) {
 		        e.printStackTrace();
-		    }		
+		    }
 	}
+
 
 	public void setNMCMin(BigDecimal min) {
 		FileOutputStream out; 
-		this.NMC_min = min;
 		
 		try {
-			p.setProperty("NMC_min", min.toPlainString());
+			pConfig.setProperty("NMC.min", min.toPlainString());
 			File f = new File("reinvestor.properties");
 			out = new FileOutputStream( f );
-			p.store(out, "reinvestor.properties");
+			pConfig.store(out, "reinvestor.properties");
 			}
 		    catch (Exception e ) {
 		        e.printStackTrace();
 		    }		
 	}
 	
+	
+	public String getAPISecret() {
+		return pConfig.getProperty("api_secret", "");
+	}
+	
 	public void setAPISecret(String api_secret) {
-		API_SECRET = api_secret;
 		FileOutputStream out;
-
 		try {
-			p.setProperty("api_secret", api_secret);
+			pConfig.setProperty("api_secret", api_secret);
 			File f = new File("reinvestor.properties");
 			out = new FileOutputStream(f);
-			p.store(out, "reinvestor.properties");
+			pConfig.store(out, "reinvestor.properties");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
+	}
+	
+	public String getAPIKey() {
+		return pConfig.getProperty("api_key", "");
 	}
 
 	public void setAPIKey(String api_key) {
-		API_KEY = api_key;
 		FileOutputStream out;
-		p.setProperty("api_key", api_key);
+
+		pConfig.setProperty("api_key", api_key);
 		File f = new File("reinvestor.properties");
 		try {
 			out = new FileOutputStream(f);
-			p.store(out, "reinvestor.properties");
+			pConfig.store(out, "reinvestor.properties");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
-	public void setUsername(String username) {
-		USERNAME = username;
-		FileOutputStream out;
-
-		try {
-			p.setProperty("username", username);
-			File f = new File("reinvestor.properties");
-			out = new FileOutputStream(f);
-			p.store(out, "reinvestor.properties");
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
 	
 	public int getThreadSleep() {
-		return this.threadSleep;
+		return Integer.valueOf(pConfig.getProperty("Thread.Sleep", "30"));
 	}
 	
+	
 	public BigDecimal getBTCMinOrder() {
-		return BTC_min_order;
+		return BigDecimal.valueOf((Double.valueOf(pConfig.getProperty("BTC.min_order", "0.0"))));
 	}
 
 	public BigDecimal getNMCMinOrder() {
-		return NMC_min_order;
+		return BigDecimal.valueOf((Double.valueOf(pConfig.getProperty("NMC.min_order", "0.0"))));
 	}
 
+	public String getUsername() {
+		return pConfig.getProperty("username", "");
+	}
 	
+	public void setUsername(String username) {
+		FileOutputStream out;
+		try {
+			pConfig.setProperty("username", username);
+			File f = new File("reinvestor.properties");
+			out = new FileOutputStream(f);
+			pConfig.store(out, "reinvestor.properties");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 
 }
