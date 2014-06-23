@@ -48,6 +48,9 @@ public class Config {
 			e.printStackTrace();
 		}
     	}
+    	else {
+    		this.pConfig = new Properties();
+    	}
     }
     
     public Object clone() throws CloneNotSupportedException {
