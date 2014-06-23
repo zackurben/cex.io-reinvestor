@@ -27,9 +27,13 @@ public class Config {
 	private BigDecimal NMC_max;
 	private BigDecimal BTC_min;
 	private BigDecimal NMC_min;
+	private BigDecimal BTC_min_order;
+	private BigDecimal NMC_min_order;
 
+	private int threadSleep = 30; // 30 seconds by default between thread loops.
 	
 	private Properties p;
+
 	
     public static Config getInstance() {
         if (INSTANCE == null) {
@@ -56,17 +60,22 @@ public class Config {
 			p.load(file);
             this.USERNAME = p.getProperty("username", "");
 			this.API_KEY = p.getProperty("api_key", "");
-				this.API_SECRET = p.getProperty("api_secret", "");
+			this.API_SECRET = p.getProperty("api_secret", "");
             
             this.BTC_active = Boolean.valueOf(p.getProperty("BTC.active", "true"));
             this.BTC_reserve = BigDecimal.valueOf((Double.valueOf(p.getProperty("BTC.reserve", "0.0"))));
 			this.BTC_max = BigDecimal.valueOf((Double.valueOf(p.getProperty("BTC.max", "0.0"))));
-				this.BTC_min = BigDecimal.valueOf((Double.valueOf(p.getProperty("BTC.min", "0.0"))));
+			this.BTC_min = BigDecimal.valueOf((Double.valueOf(p.getProperty("BTC.min", "0.0"))));
             this.NMC_active = Boolean.valueOf(p.getProperty("NMC.active", "true"));
             this.NMC_reserve = BigDecimal.valueOf((Double.valueOf(p.getProperty("NMC.reserve", "0.0"))));
 			this.NMC_max = BigDecimal.valueOf((Double.valueOf(p.getProperty("NMC.max", "0.0"))));
-				this.NMC_min = BigDecimal.valueOf((Double.valueOf(p.getProperty("NMC.min", "0.0"))));
+			this.NMC_min = BigDecimal.valueOf((Double.valueOf(p.getProperty("NMC.min", "0.0"))));
             
+			this.threadSleep = Integer.valueOf(p.getProperty("Thread.Sleep", "30"));
+			
+			this.BTC_min_order = BigDecimal.valueOf((Double.valueOf(p.getProperty("BTC.min_order", "0.0"))));
+			this.NMC_min_order = BigDecimal.valueOf((Double.valueOf(p.getProperty("NMC.min_order", "0.0"))));
+				
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		 } catch (IOException e) {
@@ -266,16 +275,14 @@ public class Config {
 	public void setAPIKey(String api_key) {
 		API_KEY = api_key;
 		FileOutputStream out;
-
+		p.setProperty("api_key", api_key);
+		File f = new File("reinvestor.properties");
 		try {
-			p.setProperty("api_key", api_key);
-			File f = new File("reinvestor.properties");
 			out = new FileOutputStream(f);
 			p.store(out, "reinvestor.properties");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
 	}
 
 	public void setUsername(String username) {
@@ -291,6 +298,19 @@ public class Config {
 			e.printStackTrace();
 		}
 	}
+	
+	public int getThreadSleep() {
+		return this.threadSleep;
+	}
+	
+	public BigDecimal getBTCMinOrder() {
+		return BTC_min_order;
+	}
+
+	public BigDecimal getNMCMinOrder() {
+		return NMC_min_order;
+	}
 
 	
+
 }

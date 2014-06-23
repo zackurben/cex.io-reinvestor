@@ -26,7 +26,8 @@ import java.math.BigDecimal;
 public class Coin {
     public boolean active;
     public BigDecimal reserve = new BigDecimal("0.00000000"),
-        max = new BigDecimal("0.00000000"), min = new BigDecimal("0.00000000");
+        max = new BigDecimal("0.00000000"), min = new BigDecimal(
+	        "0.00000000"), min_order = new BigDecimal("0.00000000");
     public String ticker;
 
     /**
@@ -44,12 +45,13 @@ public class Coin {
      *        The pair ticker for Cex.io
      */
     public Coin(Boolean active, BigDecimal reserve, BigDecimal max,
-        BigDecimal min, String ticker) {
+        BigDecimal min, BigDecimal min_order, String ticker) {
         this.active = active;
         this.reserve = reserve;
         this.max = max;
         this.min = min;
         this.ticker = ticker;
+        this.min_order = min_order;
     }
 
     /**

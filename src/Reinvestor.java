@@ -48,7 +48,7 @@ public class Reinvestor extends CexAPI {
     protected InputThread input;
     protected ReinvestThread reinvest;
     protected Dashboard gui;
-    protected boolean done, debug = false;
+    protected boolean done, debug = true;
     private Config cfg =null;
 
     /**
@@ -67,9 +67,9 @@ public class Reinvestor extends CexAPI {
         this.startTime = System.currentTimeMillis();
         this.lastTime = this.startTime;
         this.apiCalls = 0;
-        this.BTC = new Coin(true, BigDecimal.ZERO, BigDecimal.ZERO,
+        this.BTC = new Coin(true, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO,
             BigDecimal.ZERO, "GHS/BTC");
-        this.NMC = new Coin(true, BigDecimal.ZERO, BigDecimal.ZERO,
+        this.NMC = new Coin(true, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO,
             BigDecimal.ZERO, "GHS/NMC");
         this.done = false;
         this.input = new InputThread(this);
@@ -92,9 +92,9 @@ public class Reinvestor extends CexAPI {
         this.startTime = System.currentTimeMillis();
         this.lastTime = this.startTime;
         this.apiCalls = 0;
-        this.BTC = new Coin(true, BigDecimal.ZERO, BigDecimal.ZERO,
+        this.BTC = new Coin(true, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO,
             BigDecimal.ZERO, "GHS/BTC");
-        this.NMC = new Coin(true, BigDecimal.ZERO, BigDecimal.ZERO,
+        this.NMC = new Coin(true, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO,
             BigDecimal.ZERO, "GHS/NMC");
         this.done = false;
         this.input = new InputThread(this);
@@ -388,6 +388,10 @@ public class Reinvestor extends CexAPI {
         this.NMC.reserve = cfg.getNMCReserve();
         this.NMC.max = cfg.getNMCMax();
         this.NMC.min =cfg.getNMCMin();
+        
+        this.BTC.min_order = cfg.getBTCMinOrder();
+		this.NMC.min_order = cfg.getNMCMinOrder();
+        
         this.out("Settings loaded successfully!");
     }
 
@@ -395,9 +399,6 @@ public class Reinvestor extends CexAPI {
      */
     public void saveSettings() {
     	cfg = Config.getInstance();
-    	
-    	
-    	
     	
     	cfg.setUsername(this.username);
     	cfg.setAPIKey(this.apiKey);
@@ -560,12 +561,14 @@ public class Reinvestor extends CexAPI {
                     // active, pending
                     trade_btc = ((this.user.BTC.active)
                         && (this.user.balance != null) && (this.user.BTC.reserve
-                        .compareTo(this.user.balance.BTC.available) <= -1))
-                        || ((this.user.BTC.active) && (!this.user.pending
+                        .compareTo(this.user.balance.BTC.available) <= -1) && (this.user.BTC.min_order
+					        .compareTo(this.user.balance.BTC.available) > 0))
+					        || ((this.user.BTC.active) && (!this.user.pending
                             .isEmpty()));
                     trade_nmc = ((this.user.NMC.active)
                         && (this.user.balance != null) && (this.user.NMC.reserve
-                        .compareTo(this.user.balance.NMC.available) <= -1))
+                        .compareTo(this.user.balance.NMC.available) <= -1) && (this.user.NMC.min_order
+					        .compareTo(this.user.balance.NMC.available) > 0))
                         || ((this.user.NMC.active) && (!this.user.pending
                             .isEmpty()));
 
@@ -574,7 +577,6 @@ public class Reinvestor extends CexAPI {
                             this.user.out("[DBG] trade_btc:trade_nmc {"
                                 + trade_btc + ":" + trade_nmc + "}");
                         }
-
                         if (trade_btc) {
                             this.analyze(this.user.balance.BTC, this.user.BTC);
                         }
@@ -606,7 +608,7 @@ public class Reinvestor extends CexAPI {
                             this.user.out("[DBG] Sleeping Reinvestor Thread.");
                         }
 
-                        Thread.sleep(20000);
+                        Thread.sleep(Config.getInstance().getThreadSleep() * 1000);
                     } catch (InterruptedException e) {
                         if (this.user.debug) {
                             this.user
