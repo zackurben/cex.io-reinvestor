@@ -18,8 +18,6 @@
  */
 
 import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -32,8 +30,12 @@ import java.util.Date;
 import java.util.Scanner;
 
 import utils.Config;
-import zackurben.cex.data.*;
+import zackurben.cex.data.Balance;
+import zackurben.cex.data.Coin;
+import zackurben.cex.data.Order;
+import zackurben.cex.data.Ticker;
 import zackurben.cex.data.Balance.Currency;
+
 import com.google.gson.Gson;
 
 public class Reinvestor extends CexAPI {
@@ -393,6 +395,9 @@ public class Reinvestor extends CexAPI {
      */
     public void saveSettings() {
     	cfg = Config.getInstance();
+    	
+    	
+    	
     	
     	cfg.setUsername(this.username);
     	cfg.setAPIKey(this.apiKey);

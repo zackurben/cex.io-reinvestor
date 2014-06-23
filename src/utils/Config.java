@@ -29,6 +29,8 @@ public class Config {
 	private BigDecimal NMC_min;
 
 	
+	private Properties p;
+	
     public static Config getInstance() {
         if (INSTANCE == null) {
             synchronized(Config.class) {
@@ -50,20 +52,20 @@ public class Config {
     	if ( f.exists() && f.isFile()) {
         try {
 			FileInputStream file = new FileInputStream(f);
-			Properties p = new Properties ();
+			this.p = new Properties();
 			p.load(file);
-            this.USERNAME= p.getProperty("username");
-            this.API_KEY = p.getProperty("api_key");
-            this.API_SECRET = p.getProperty("api_secret");
+            this.USERNAME = p.getProperty("username", "");
+			this.API_KEY = p.getProperty("api_key", "");
+				this.API_SECRET = p.getProperty("api_secret", "");
             
-            this.BTC_active = Boolean.valueOf( p.getProperty("BTC.active"));
-            this.BTC_reserve = BigDecimal.valueOf(( Double.valueOf( p.getProperty("BTC.reserve"))));
-            this.BTC_max = BigDecimal.valueOf(( Double.valueOf( p.getProperty("BTC.max"))));
-            this.BTC_min = BigDecimal.valueOf(( Double.valueOf( p.getProperty("BTC.min"))));
-            this.NMC_active = Boolean.valueOf( p.getProperty("NMC.active"));
-            this.NMC_reserve =  BigDecimal.valueOf(( Double.valueOf( p.getProperty("NMC.reserve"))));
-            this.NMC_max =  BigDecimal.valueOf(( Double.valueOf( p.getProperty("NMC.max"))));
-            this.NMC_min = BigDecimal.valueOf(( Double.valueOf( p.getProperty("NMC.min"))));
+            this.BTC_active = Boolean.valueOf(p.getProperty("BTC.active", "true"));
+            this.BTC_reserve = BigDecimal.valueOf((Double.valueOf(p.getProperty("BTC.reserve", "0.0"))));
+			this.BTC_max = BigDecimal.valueOf((Double.valueOf(p.getProperty("BTC.max", "0.0"))));
+				this.BTC_min = BigDecimal.valueOf((Double.valueOf(p.getProperty("BTC.min", "0.0"))));
+            this.NMC_active = Boolean.valueOf(p.getProperty("NMC.active", "true"));
+            this.NMC_reserve = BigDecimal.valueOf((Double.valueOf(p.getProperty("NMC.reserve", "0.0"))));
+			this.NMC_max = BigDecimal.valueOf((Double.valueOf(p.getProperty("NMC.max", "0.0"))));
+				this.NMC_min = BigDecimal.valueOf((Double.valueOf(p.getProperty("NMC.min", "0.0"))));
             
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
@@ -83,25 +85,16 @@ public class Config {
 		return USERNAME;
 	}
 
-	public void setUsername(String username) {
-		USERNAME = username;
-	}
 
 	public String getAPIKey() {
 		return API_KEY;
 	}
 
-	public void setAPIKey(String api_key) {
-		API_KEY = api_key;
-	}
 
 	public String getAPISecret() {
 		return API_SECRET;
 	}
 
-	public void setAPISecret(String api_secret) {
-		API_SECRET = api_secret;
-	}
 
 	public Boolean isBTCActive() {
 		return BTC_active;
@@ -140,11 +133,10 @@ public class Config {
 		this.BTC_active = active;
 		
 		try {
-			Properties props = new Properties();
-			props.setProperty("BTC_active",Boolean.valueOf(active).toString());
+			p.setProperty("BTC_active", Boolean.valueOf(active).toString());
 			File f = new File("reinvestor.properties");
 			out = new FileOutputStream( f );
-			props.store(out, "reinvestor.properties");
+			p.store(out, "reinvestor.properties");
 			}
 		    catch (Exception e ) {
 		        e.printStackTrace();
@@ -156,11 +148,10 @@ public class Config {
 		this.NMC_active = active;
 		
 		try {
-			Properties props = new Properties();
-			props.setProperty("NMC_active",Boolean.valueOf(active).toString());
+			p.setProperty("NMC_active", Boolean.valueOf(active).toString());
 			File f = new File("reinvestor.properties");
 			out = new FileOutputStream( f );
-			props.store(out, "reinvestor.properties");
+			p.store(out, "reinvestor.properties");
 			}
 		    catch (Exception e ) {
 		        e.printStackTrace();
@@ -172,11 +163,10 @@ public class Config {
 		this.BTC_reserve = reserve;
 		
 		try {
-			Properties props = new Properties();
-			props.setProperty("BTC_reserve",reserve.toPlainString());
+			p.setProperty("BTC_reserve", reserve.toPlainString());
 			File f = new File("reinvestor.properties");
 			out = new FileOutputStream( f );
-			props.store(out, "reinvestor.properties");
+			p.store(out, "reinvestor.properties");
 			}
 		    catch (Exception e ) {
 		        e.printStackTrace();
@@ -189,11 +179,10 @@ public class Config {
 		this.BTC_min = min;
 
 		try {
-			Properties props = new Properties();
-			props.setProperty("BTC_min",min.toPlainString());
+			p.setProperty("BTC_min", min.toPlainString());
 			File f = new File("reinvestor.properties");
 			out = new FileOutputStream( f );
-			props.store(out, "reinvestor.properties");
+			p.store(out, "reinvestor.properties");
 			}
 		    catch (Exception e ) {
 		        e.printStackTrace();
@@ -205,11 +194,10 @@ public class Config {
 		this.BTC_max = max;
 		
 		try {
-			Properties props = new Properties();
-			props.setProperty("BTC_max",max.toPlainString());
+			p.setProperty("BTC_max", max.toPlainString());
 			File f = new File("reinvestor.properties");
 			out = new FileOutputStream( f );
-			props.store(out, "reinvestor.properties");
+			p.store(out, "reinvestor.properties");
 			}
 		    catch (Exception e ) {
 		        e.printStackTrace();
@@ -220,11 +208,10 @@ public class Config {
 		FileOutputStream out; 
 		this.NMC_reserve = reserve;
 		try {
-			Properties props = new Properties();
-			props.setProperty("NMC_reserve",reserve.toPlainString());
+			p.setProperty("NMC_reserve", reserve.toPlainString());
 			File f = new File("reinvestor.properties");
 			out = new FileOutputStream( f );
-			props.store(out, "reinvestor.properties");
+			p.store(out, "reinvestor.properties");
 			}
 		    catch (Exception e ) {
 		        e.printStackTrace();
@@ -236,11 +223,10 @@ public class Config {
 		this.NMC_max = max;
 		
 		try {
-			Properties props = new Properties();
-			props.setProperty("NMC_max",max.toPlainString());
+			p.setProperty("NMC_max", max.toPlainString());
 			File f = new File("reinvestor.properties");
 			out = new FileOutputStream( f );
-			props.store(out, "reinvestor.properties");
+			p.store(out, "reinvestor.properties");
 			}
 		    catch (Exception e ) {
 		        e.printStackTrace();
@@ -252,14 +238,59 @@ public class Config {
 		this.NMC_min = min;
 		
 		try {
-			Properties props = new Properties();
-			props.setProperty("NMC_min",min.toPlainString());
+			p.setProperty("NMC_min", min.toPlainString());
 			File f = new File("reinvestor.properties");
 			out = new FileOutputStream( f );
-			props.store(out, "reinvestor.properties");
+			p.store(out, "reinvestor.properties");
 			}
 		    catch (Exception e ) {
 		        e.printStackTrace();
 		    }		
-	}	
+	}
+	
+	public void setAPISecret(String api_secret) {
+		API_SECRET = api_secret;
+		FileOutputStream out;
+
+		try {
+			p.setProperty("api_secret", api_secret);
+			File f = new File("reinvestor.properties");
+			out = new FileOutputStream(f);
+			p.store(out, "reinvestor.properties");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+	}
+
+	public void setAPIKey(String api_key) {
+		API_KEY = api_key;
+		FileOutputStream out;
+
+		try {
+			p.setProperty("api_key", api_key);
+			File f = new File("reinvestor.properties");
+			out = new FileOutputStream(f);
+			p.store(out, "reinvestor.properties");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+	}
+
+	public void setUsername(String username) {
+		USERNAME = username;
+		FileOutputStream out;
+
+		try {
+			p.setProperty("username", username);
+			File f = new File("reinvestor.properties");
+			out = new FileOutputStream(f);
+			p.store(out, "reinvestor.properties");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	
 }
