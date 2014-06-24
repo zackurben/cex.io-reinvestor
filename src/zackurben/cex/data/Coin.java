@@ -27,7 +27,7 @@ public class Coin {
     public boolean active;
     public BigDecimal reserve = new BigDecimal("0.00000000"),
         max = new BigDecimal("0.00000000"), min = new BigDecimal(
-	        "0.00000000"), min_order = new BigDecimal("0.00000000");
+	        "0.00000000");
     public String ticker;
 
     /**
@@ -51,7 +51,6 @@ public class Coin {
         this.max = max;
         this.min = min;
         this.ticker = ticker;
-        this.min_order = min_order;
     }
 
     /**
@@ -59,7 +58,7 @@ public class Coin {
      */
     public String toString() {
         return "{" + this.active + ":" + this.reserve.toPlainString() + ":"
-            + this.max.toPlainString() + ":" + this.min.toPlainString() + ":"
+            + this.max.toPlainString() + ":" + this.min.toPlainString() + ":"  
             + this.ticker + "}";
     }
 }

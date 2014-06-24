@@ -36,10 +36,11 @@ public class Config {
     
     private void loadConfig() {
     	File f = new File ("reinvestor.properties");
+		this.pConfig = new Properties();
+
     	if ( f.exists() && f.isFile()) {
         try {
 			FileInputStream file = new FileInputStream(f);
-			this.pConfig = new Properties();
 			pConfig.load(file);
 				
 		} catch (FileNotFoundException e) {
@@ -47,9 +48,6 @@ public class Config {
 		 } catch (IOException e) {
 			e.printStackTrace();
 		}
-    	}
-    	else {
-    		this.pConfig = new Properties();
     	}
     }
     
@@ -133,10 +131,8 @@ public class Config {
 		    }		
 	}
 
-
 	public void setBTCMin(BigDecimal min) {
 		FileOutputStream out; 
-
 		try {
 			pConfig.setProperty("BTC.min", min.toPlainString());
 			File f = new File("reinvestor.properties");
@@ -148,10 +144,8 @@ public class Config {
 		    }
 	}
 
-	
 	public void setBTCMax(BigDecimal max) {
-		FileOutputStream out; 
-		
+		FileOutputStream out;
 		try {
 			pConfig.setProperty("BTC.max", max.toPlainString());
 			File f = new File("reinvestor.properties");
@@ -189,7 +183,6 @@ public class Config {
 		    }
 	}
 
-
 	public void setNMCMin(BigDecimal min) {
 		FileOutputStream out; 
 		
@@ -203,7 +196,6 @@ public class Config {
 		        e.printStackTrace();
 		    }		
 	}
-	
 	
 	public String getAPISecret() {
 		return pConfig.getProperty("api_secret", "");
@@ -267,5 +259,11 @@ public class Config {
 			e.printStackTrace();
 		}
 	}
+	
+	
+	public Boolean isDebug() {
+		return Boolean.valueOf(pConfig.getProperty("debug", "true"));
+	}
+
 
 }

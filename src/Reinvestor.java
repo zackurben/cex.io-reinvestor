@@ -48,8 +48,8 @@ public class Reinvestor extends CexAPI {
     protected InputThread input;
     protected ReinvestThread reinvest;
     protected Dashboard gui;
-    protected boolean done, debug = true;
-    private Config cfg =null;
+    protected boolean done, debug = Config.getInstance().isDebug();
+    private Config cfg = null;
 
     /**
      * Reinvestor constructor for Terminal/bash/cmd mode.
@@ -389,9 +389,6 @@ public class Reinvestor extends CexAPI {
         this.NMC.max = cfg.getNMCMax();
         this.NMC.min =cfg.getNMCMin();
         
-        this.BTC.min_order = cfg.getBTCMinOrder();
-		this.NMC.min_order = cfg.getNMCMinOrder();
-        
         this.out("Settings loaded successfully!");
     }
 
@@ -559,15 +556,32 @@ public class Reinvestor extends CexAPI {
 
                     // active, balance != null, reserve < available
                     // active, pending
+                    
+                    if (this.user.debug) {
+                    this.user.out("BTC active: " + this.user.BTC.active);
+                    this.user.out("balance !=null: " + (this.user.balance!=null));
+                    this.user.out("BTC.available ("+ this.user.balance.BTC.available+") > BTC.reserve ("+this.user.BTC.reserve+"): " + (this.user.BTC.reserve.compareTo(this.user.balance.BTC.available) <= -1) );
+                    this.user.out("BTC.available ("+ this.user.balance.BTC.available+") > BTC.min_order ("+Config.getInstance().getBTCMinOrder()+"): " + (Config.getInstance().getBTCMinOrder().compareTo(this.user.balance.BTC.available) <= -1)) ;
+                    this.user.out("pending orders: " + !this.user.pending.isEmpty() );
+                    }
                     trade_btc = ((this.user.BTC.active)
                         && (this.user.balance != null) && (this.user.BTC.reserve
-                        .compareTo(this.user.balance.BTC.available) <= -1) && (this.user.BTC.min_order
+                        .compareTo(this.user.balance.BTC.available) <= -1) && (Config.getInstance().getBTCMinOrder()
 					        .compareTo(this.user.balance.BTC.available) <= -1))
 					        || ((this.user.BTC.active) && (!this.user.pending
                             .isEmpty()));
+                    
+                    if (this.user.debug) {
+                        this.user.out("NMC active: " + this.user.NMC.active);
+                        this.user.out("balance !=null: " + (this.user.balance!=null));
+                        this.user.out("NMC.available ("+ this.user.balance.NMC.available+") > NMC.reserve ("+this.user.NMC.reserve+"): " + (this.user.NMC.reserve.compareTo(this.user.balance.NMC.available) <= -1) );
+                        this.user.out("NMC.available ("+ this.user.balance.NMC.available+") > NMC.min_order ("+Config.getInstance().getNMCMinOrder()+"): " + (Config.getInstance().getNMCMinOrder().compareTo(this.user.balance.NMC.available) <= -1)) ;
+                        this.user.out("pending orders: " + !this.user.pending.isEmpty() );
+                        }
+                    
                     trade_nmc = ((this.user.NMC.active)
                         && (this.user.balance != null) && (this.user.NMC.reserve
-                        .compareTo(this.user.balance.NMC.available) <= -1) && (this.user.NMC.min_order
+                        .compareTo(this.user.balance.NMC.available) <= -1) && (Config.getInstance().getNMCMinOrder()
 					        .compareTo(this.user.balance.NMC.available) <= -1))
                         || ((this.user.NMC.active) && (!this.user.pending
                             .isEmpty()));
