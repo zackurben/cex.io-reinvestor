@@ -560,7 +560,10 @@ public class Reinvestor extends CexAPI {
                     if (this.user.debug) {
                     this.user.out("BTC active: " + this.user.BTC.active);
                     this.user.out("balance !=null: " + (this.user.balance!=null));
-                    this.user.out("BTC.available ("+ this.user.balance.BTC.available+") > BTC.reserve ("+this.user.BTC.reserve+"): " + (this.user.BTC.reserve.compareTo(this.user.balance.BTC.available) <= -1) );
+                    this.user.out("BTC.available ("+ this.user.balance.BTC.available+
+                    		") > BTC.reserve ("+this.user.BTC.reserve+
+                    		"): " + (this.user.BTC.reserve.compareTo(
+                    				this.user.balance.BTC.available) <= -1) );
                     this.user.out("BTC.available ("+ this.user.balance.BTC.available+") > BTC.min_order ("+Config.getInstance().getBTCMinOrder()+"): " + (Config.getInstance().getBTCMinOrder().compareTo(this.user.balance.BTC.available) <= -1)) ;
                     this.user.out("pending orders: " + !this.user.pending.isEmpty() );
                     }
