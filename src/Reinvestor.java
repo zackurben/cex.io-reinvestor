@@ -611,7 +611,13 @@ public class Reinvestor extends CexAPI {
 
                     this.user.nonce = Integer.valueOf((int) (System
                         .currentTimeMillis() / 1000));
-                    out("Error 0x1: " + this.user.balance.toString());
+                    
+                    if ( this.user.balance != null ) {
+                    	out("Error 0x1: " + this.user.balance.toString());	
+                    } else {
+                    	out("Error 0x1: " + "null balance" );
+                    }
+                    
 
                     StringWriter error = new StringWriter();
                     e.printStackTrace(new PrintWriter(error));
