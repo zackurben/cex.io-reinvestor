@@ -547,17 +547,21 @@ public class Reinvestor extends CexAPI {
                 }
 
                 try {
+                	boolean skip = false;
+                	
                     this.user.balance = new Gson().fromJson(this.user.execute(
                         "balance", new String[] {}), Balance.class);
-
+           
                     if (this.user.debug) {
                         this.user.out("[DBG] Determing trades..");
                     }
 
+                    
+                    skip = this.user.balance == null || this.user.balance.BTC == null || this.user.balance.NMC == null || this.user.balance.BTC.available == null ||this.user.balance.NMC.available == null ; 
+                    
                     // active, balance != null, reserve < available
                     // active, pending
-                    
-                    if (this.user.debug) {
+                    if (this.user.debug && !skip) {
                     this.user.out("BTC active: " + this.user.BTC.active);
                     this.user.out("balance !=null: " + (this.user.balance!=null));
                     this.user.out("BTC.available ("+ this.user.balance.BTC.available+
@@ -567,6 +571,8 @@ public class Reinvestor extends CexAPI {
                     this.user.out("BTC.available ("+ this.user.balance.BTC.available+") > BTC.min_order ("+Config.getInstance().getBTCMinOrder()+"): " + (Config.getInstance().getBTCMinOrder().compareTo(this.user.balance.BTC.available) <= -1)) ;
                     this.user.out("pending orders: " + !this.user.pending.isEmpty() );
                     }
+                    
+                    if (!skip ) {
                     trade_btc = ((this.user.BTC.active)
                         && (this.user.balance != null) && (this.user.BTC.reserve
                         .compareTo(this.user.balance.BTC.available) <= -1) && (Config.getInstance().getBTCMinOrder()
@@ -606,6 +612,9 @@ public class Reinvestor extends CexAPI {
                                 .out("[DBG] Waiting, insufficient funds to initiate new positions.");
                         }
                     }
+                    
+                    
+                }
                 } catch (NullPointerException e) {
                     // error with api call
                     if (this.user.debug) {
