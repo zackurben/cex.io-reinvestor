@@ -28,6 +28,26 @@ public class Balance {
     public String username;
     public Currency BTC, LTC, DOGE, FTC, AUR, NMC, IXC, DVC, GHS;
     public String error = "";
+    
+
+    /**
+     * 
+     * @return
+     */
+    public boolean isValid() {
+    	boolean retval = false;
+    	retval = this.BTC != null && this.NMC != null && this.BTC.available != null && this.NMC.available != null && this.username!= null ;
+    	
+    	Currency currency[] = new Currency[] { this.BTC, this.LTC,
+                this.DOGE, this.FTC, this.AUR, this.NMC, this.IXC, this.DVC,
+                this.GHS };
+
+            for (Currency curr : currency) {
+                retval = retval && curr != null;
+            }    	
+    	
+    	return retval;
+    }
 
     /**
      * Overide the default toString method to give basic object data dump.
