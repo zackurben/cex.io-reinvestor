@@ -38,9 +38,7 @@ public class Balance {
     	boolean retval = false;
     	retval = this.BTC != null && this.NMC != null && this.BTC.available != null && this.NMC.available != null && this.username!= null ;
     	
-    	Currency currency[] = new Currency[] { this.BTC, this.LTC,
-                this.DOGE, this.FTC, this.AUR, this.NMC, this.IXC, this.DVC,
-                this.GHS };
+    	Currency currency[] = new Currency[] { this.BTC,this.NMC};
 
             for (Currency curr : currency) {
                 retval = retval && curr != null;
