@@ -759,6 +759,24 @@ public class Reinvestor extends CexAPI {
 
             this.user.balance = new Gson().fromJson(this.user.execute(
                 "balance", new String[] {}), Balance.class);
+            
+           	// repeat api call until balance doesn't contain nulls
+              while (this.user.balance == null || !this.user.balance.isValid() ) {
+                	this.user.out("null balance, re-calling API");
+                    this.user.balance = new Gson().fromJson(this.user.execute(
+                            "balance", new String[] {}), Balance.class);
+                    try {
+						Thread.sleep(1500);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+                }
+            
+            
+            
+            
+            
+            
 
             // Make purchases
             if (currency.available.compareTo(coin.reserve) == 1) {

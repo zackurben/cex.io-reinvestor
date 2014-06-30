@@ -54,9 +54,9 @@ public class Balance {
         if (error.compareToIgnoreCase("") == 0) {
             String output = "{" + this.timestamp + ":" + this.username;
 
-            Currency currency[] = new Currency[] { this.BTC, this.LTC,
+            Currency currency[] = new Currency[] { this.BTC, this.LTC /*,
                 this.DOGE, this.FTC, this.AUR, this.NMC, this.IXC, this.DVC,
-                this.GHS };
+                this.GHS*/ };
 
             for (Currency curr : currency) {
                 output += ":" + curr.toString();
