@@ -18,8 +18,6 @@
  */
 
 import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -30,8 +28,14 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Scanner;
-import zackurben.cex.data.*;
+
+import utils.Config;
+import zackurben.cex.data.Balance;
+import zackurben.cex.data.Coin;
+import zackurben.cex.data.Order;
+import zackurben.cex.data.Ticker;
 import zackurben.cex.data.Balance.Currency;
+
 import com.google.gson.Gson;
 
 public class Reinvestor extends CexAPI {
@@ -44,7 +48,8 @@ public class Reinvestor extends CexAPI {
     protected InputThread input;
     protected ReinvestThread reinvest;
     protected Dashboard gui;
-    protected boolean done, debug = false;
+    protected boolean done, debug = Config.getInstance().isDebug();
+    private Config cfg = null;
 
     /**
      * Reinvestor constructor for Terminal/bash/cmd mode.
@@ -62,9 +67,9 @@ public class Reinvestor extends CexAPI {
         this.startTime = System.currentTimeMillis();
         this.lastTime = this.startTime;
         this.apiCalls = 0;
-        this.BTC = new Coin(true, BigDecimal.ZERO, BigDecimal.ZERO,
+        this.BTC = new Coin(true, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO,
             BigDecimal.ZERO, "GHS/BTC");
-        this.NMC = new Coin(true, BigDecimal.ZERO, BigDecimal.ZERO,
+        this.NMC = new Coin(true, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO,
             BigDecimal.ZERO, "GHS/NMC");
         this.done = false;
         this.input = new InputThread(this);
@@ -87,9 +92,9 @@ public class Reinvestor extends CexAPI {
         this.startTime = System.currentTimeMillis();
         this.lastTime = this.startTime;
         this.apiCalls = 0;
-        this.BTC = new Coin(true, BigDecimal.ZERO, BigDecimal.ZERO,
+        this.BTC = new Coin(true, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO,
             BigDecimal.ZERO, "GHS/BTC");
-        this.NMC = new Coin(true, BigDecimal.ZERO, BigDecimal.ZERO,
+        this.NMC = new Coin(true, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO,
             BigDecimal.ZERO, "GHS/NMC");
         this.done = false;
         this.input = new InputThread(this);
@@ -317,8 +322,24 @@ public class Reinvestor extends CexAPI {
         while (!done) {
             if (this.apiCalls < this.MAX_API_CALLS) {
                 if (function == "balance") {
-                    output = this.balance();
-
+                	
+                	// call balance without 5XX http errors
+            		boolean ok = true;
+                	do {
+                		ok = true;
+                		try {
+                			output = this.balance();
+                		}
+                		catch (Exception e) {
+                			ok = false;
+                			try {
+								Thread.sleep(1500);
+							} catch (InterruptedException e1) {
+								e1.printStackTrace();
+							}
+                		}
+                	} while (!ok); 
+ 
                     if (this.gui != null) {
                         this.gui.DISPLAY_BALANCE.setText(formatBalance(output));
                     }
@@ -371,69 +392,41 @@ public class Reinvestor extends CexAPI {
     }
 
     /**
-     * Load settings from 'settings.txt' file, if it exists.
-     * 
-     * settings.txt Example:
-     * username,apiKey,apiSecret,btcActive,btcReserve,btcMax,btcMin,nmcActive,
-     * nmcReserve,nmcMax,nmcMin
+     * Load config
      */
     public void loadSettings() {
-        File file = new File("settings.txt");
-        if (file.exists() && file.isFile()) {
-            try {
-                Scanner input = new Scanner(file).useDelimiter(",");
-                String temp[] = new String[11];
-
-                // ignore first 3 inputs
-                // username,apiKey,apiSecret
-                for (int a = 0; a < temp.length; a++) {
-                    temp[a] = input.next();
-                }
-
-                this.BTC.active = Boolean.valueOf(temp[3]);
-                this.BTC.reserve = BigDecimal.valueOf(Double.valueOf(temp[4]));
-                this.BTC.max = BigDecimal.valueOf(Double.valueOf(temp[5]));
-                this.BTC.min = BigDecimal.valueOf(Double.valueOf(temp[6]));
-                this.NMC.active = Boolean.valueOf(temp[7]);
-                this.NMC.reserve = BigDecimal.valueOf(Double.valueOf(temp[8]));
-                this.NMC.max = BigDecimal.valueOf(Double.valueOf(temp[9]));
-                this.NMC.min = BigDecimal.valueOf(Double.valueOf(temp[10]));
-                this.out("Settings loaded successfully!");
-            } catch (FileNotFoundException e) {
-                this.out("Error 0xB.");
-                this.log("error", "Error 0xB:\n" + e.getMessage());
-            }
-        }
+    	cfg = Config.getInstance();
+        this.BTC.active = Boolean.valueOf(cfg.isBTCActive());
+        this.BTC.reserve = cfg.getBTCReserve() ;
+        this.BTC.max = cfg.getBTCMax();
+        this.BTC.min = cfg.getBTCMin();
+        this.NMC.active = Boolean.valueOf(cfg.isNMCActive());
+        this.NMC.reserve = cfg.getNMCReserve();
+        this.NMC.max = cfg.getNMCMax();
+        this.NMC.min =cfg.getNMCMin();
+        
+        this.out("Settings loaded successfully!");
     }
 
     /**
-     * Write user settings to a file, 'settings.txt', which will load the last
-     * settings upon next program start-up.
      */
     public void saveSettings() {
-        PrintWriter write = null;
-        try {
-            write = new PrintWriter(new BufferedWriter(new FileWriter(
-                "settings.txt", false)));
-            String temp = this.username + "," + this.apiKey + ","
-                + this.apiSecret + "," + this.BTC.active + ","
-                + this.BTC.reserve.toPlainString() + ","
-                + this.BTC.max.toPlainString() + ","
-                + this.BTC.min.toPlainString() + "," + this.NMC.active + ","
-                + this.NMC.reserve.toPlainString() + ","
-                + this.NMC.max.toPlainString() + ","
-                + this.NMC.min.toPlainString();
-            write.write(temp);
-            this.out("Settings saved successfully!");
-        } catch (IOException e) {
-            this.out("Error 0xA.");
-            this.log("error", "Error 0xA:\n" + e.getMessage());
-        } finally {
-            if (write != null) {
-                write.close();
-            }
-        }
-    }
+    	cfg = Config.getInstance();
+    	
+    	cfg.setUsername(this.username);
+    	cfg.setAPIKey(this.apiKey);
+    	cfg.setAPISecret(this.apiSecret);
+    	
+    	cfg.setBTCActive( this.BTC.active );
+    	cfg.setBTCReserve(this.BTC.reserve);
+    	cfg.setBTCMax(this.BTC.max);
+    	cfg.setBTCMin(this.BTC.min);
+    	
+    	cfg.setNMCActive(this.NMC.active);
+    	cfg.setNMCReserve(this.NMC.reserve);
+    	cfg.setNMCMax(this.NMC.max);
+    	cfg.setNMCMin(this.NMC.min);
+ }
 
     /**
      * Thread wrapper to process user input, in a separate thread.
@@ -572,21 +565,60 @@ public class Reinvestor extends CexAPI {
                 try {
                     this.user.balance = new Gson().fromJson(this.user.execute(
                         "balance", new String[] {}), Balance.class);
-
+                    
+              
+                	// repeat api call until balance doesn't contain nulls
+                    while (this.user.balance == null || !this.user.balance.isValid() ) {
+                    	this.user.out("null balance, re-calling API");
+                        this.user.balance = new Gson().fromJson(this.user.execute(
+                                "balance", new String[] {}), Balance.class);
+                        try {
+							Thread.sleep(1500);
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+                    }
+                    
+                    
                     if (this.user.debug) {
                         this.user.out("[DBG] Determing trades..");
                     }
 
+                    
+//                    skip = this.user.balance == null || this.user.balance.BTC == null || this.user.balance.NMC == null || this.user.balance.BTC.available == null ||this.user.balance.NMC.available == null ; 
+                    
                     // active, balance != null, reserve < available
                     // active, pending
+                    if (this.user.debug ) {
+                    this.user.out("BTC active: " + this.user.BTC.active);
+                    this.user.out("balance !=null: " + (this.user.balance!=null));
+                    this.user.out("BTC.available ("+ this.user.balance.BTC.available+
+                    		") > BTC.reserve ("+this.user.BTC.reserve+
+                    		"): " + (this.user.BTC.reserve.compareTo(
+                    				this.user.balance.BTC.available) <= -1) );
+                    this.user.out("BTC.available ("+ this.user.balance.BTC.available+") > BTC.min_order ("+Config.getInstance().getBTCMinOrder()+"): " + (Config.getInstance().getBTCMinOrder().compareTo(this.user.balance.BTC.available) <= -1)) ;
+                    this.user.out("pending orders: " + !this.user.pending.isEmpty() );
+                    }
+                    
                     trade_btc = ((this.user.BTC.active)
                         && (this.user.balance != null) && (this.user.BTC.reserve
-                        .compareTo(this.user.balance.BTC.available) <= -1))
-                        || ((this.user.BTC.active) && (!this.user.pending
+                        .compareTo(this.user.balance.BTC.available) <= -1) && (Config.getInstance().getBTCMinOrder()
+					        .compareTo(this.user.balance.BTC.available) <= -1))
+					        || ((this.user.BTC.active) && (!this.user.pending
                             .isEmpty()));
+                    
+                    if (this.user.debug) {
+                        this.user.out("NMC active: " + this.user.NMC.active);
+                        this.user.out("balance !=null: " + (this.user.balance!=null));
+                        this.user.out("NMC.available ("+ this.user.balance.NMC.available+") > NMC.reserve ("+this.user.NMC.reserve+"): " + (this.user.NMC.reserve.compareTo(this.user.balance.NMC.available) <= -1) );
+                        this.user.out("NMC.available ("+ this.user.balance.NMC.available+") > NMC.min_order ("+Config.getInstance().getNMCMinOrder()+"): " + (Config.getInstance().getNMCMinOrder().compareTo(this.user.balance.NMC.available) <= -1)) ;
+                        this.user.out("pending orders: " + !this.user.pending.isEmpty() );
+                        }
+                    
                     trade_nmc = ((this.user.NMC.active)
                         && (this.user.balance != null) && (this.user.NMC.reserve
-                        .compareTo(this.user.balance.NMC.available) <= -1))
+                        .compareTo(this.user.balance.NMC.available) <= -1) && (Config.getInstance().getNMCMinOrder()
+					        .compareTo(this.user.balance.NMC.available) <= -1))
                         || ((this.user.NMC.active) && (!this.user.pending
                             .isEmpty()));
 
@@ -595,7 +627,6 @@ public class Reinvestor extends CexAPI {
                             this.user.out("[DBG] trade_btc:trade_nmc {"
                                 + trade_btc + ":" + trade_nmc + "}");
                         }
-
                         if (trade_btc) {
                             this.analyze(this.user.balance.BTC, this.user.BTC);
                         }
@@ -608,6 +639,9 @@ public class Reinvestor extends CexAPI {
                                 .out("[DBG] Waiting, insufficient funds to initiate new positions.");
                         }
                     }
+                    
+                    
+                
                 } catch (NullPointerException e) {
                     // error with api call
                     if (this.user.debug) {
@@ -616,7 +650,13 @@ public class Reinvestor extends CexAPI {
 
                     this.user.nonce = Integer.valueOf((int) (System
                         .currentTimeMillis() / 1000));
-                    out("Error 0x1: " + this.user.balance.toString());
+                    
+                    if ( this.user.balance != null && this.user.balance.isValid()) {
+                    	out("Error 0x1: " + this.user.balance.toString());	
+                    } else {
+                    	out("Error 0x1: " + "null balance" );
+                    }
+                    
 
                     StringWriter error = new StringWriter();
                     e.printStackTrace(new PrintWriter(error));
@@ -627,7 +667,7 @@ public class Reinvestor extends CexAPI {
                             this.user.out("[DBG] Sleeping Reinvestor Thread.");
                         }
 
-                        Thread.sleep(20000);
+                        Thread.sleep(Config.getInstance().getThreadSleep() * 1000);
                     } catch (InterruptedException e) {
                         if (this.user.debug) {
                             this.user
@@ -735,6 +775,24 @@ public class Reinvestor extends CexAPI {
 
             this.user.balance = new Gson().fromJson(this.user.execute(
                 "balance", new String[] {}), Balance.class);
+            
+           	// repeat api call until balance doesn't contain nulls
+              while (this.user.balance == null || !this.user.balance.isValid() ) {
+                	this.user.out("null balance, re-calling API");
+                    this.user.balance = new Gson().fromJson(this.user.execute(
+                            "balance", new String[] {}), Balance.class);
+                    try {
+						Thread.sleep(1500);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+                }
+            
+            
+            
+            
+            
+            
 
             // Make purchases
             if (currency.available.compareTo(coin.reserve) == 1) {
