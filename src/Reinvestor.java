@@ -322,8 +322,24 @@ public class Reinvestor extends CexAPI {
         while (!done) {
             if (this.apiCalls < this.MAX_API_CALLS) {
                 if (function == "balance") {
-                    output = this.balance();
-
+                	
+                	// call balance without 5XX http errors
+            		boolean ok = true;
+                	do {
+                		ok = true;
+                		try {
+                			output = this.balance();
+                		}
+                		catch (Exception e) {
+                			ok = false;
+                			try {
+								Thread.sleep(1500);
+							} catch (InterruptedException e1) {
+								e1.printStackTrace();
+							}
+                		}
+                	} while (!ok); 
+ 
                     if (this.gui != null) {
                         this.gui.DISPLAY_BALANCE.setText(formatBalance(output));
                     }
