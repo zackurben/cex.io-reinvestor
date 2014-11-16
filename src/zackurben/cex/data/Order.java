@@ -25,7 +25,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 public class Order {
-    public int id;
+    public String id;
     public long time;
     public BigDecimal pending = new BigDecimal("0.00000000"),
         amount = new BigDecimal("0.00000000"), price = new BigDecimal(
