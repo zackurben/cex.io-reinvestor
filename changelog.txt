@@ -38,3 +38,7 @@
  - Added support for trading fees (0.5% for future-proofing) and their logging (albeit not 100% accurate currently).
  - Added support for all non-temporary CEX currencies.
  - Minimal GUI changes to compensate for increased balance output.
+
+1.1.1
+ - Fixed issue with order id overflowing the Java Integer data type.
+ - Fixed issue with the reinvestor crashing on NMC trades, due to its removal.
