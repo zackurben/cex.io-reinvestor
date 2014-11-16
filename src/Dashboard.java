@@ -47,10 +47,9 @@ import com.google.gson.Gson;
 public class Dashboard {
     protected JFrame FRAME_DASHBOARD;
     protected JTextField DISPLAY_USERNAME, DISPLAY_STATUS, INPUT_RESERVE_BTC,
-        INPUT_RESERVE_NMC, INPUT_MAX_BTC, INPUT_MAX_NMC, INPUT_MIN_BTC,
-        INPUT_MIN_NMC, DISPLAY_API_CALLS, DISPLAY_ORDERS, DISPLAY_CANCELED,
-        DISPLAY_PENDING, DISPLAY_START_TIME, DISPLAY_LAST_ACTIVITY,
-        DISPLAY_DURATION;
+        INPUT_MAX_BTC, INPUT_MIN_BTC, DISPLAY_API_CALLS, DISPLAY_ORDERS, 
+        DISPLAY_CANCELED, DISPLAY_PENDING, DISPLAY_START_TIME, 
+        DISPLAY_LAST_ACTIVITY, DISPLAY_DURATION;
     protected JPanel PANEL, TAB_SETTINGS, TAB_INFO, TAB_LOG, TAB_ABOUT;
     protected JTabbedPane PANEL_TAB;
     protected JLabel LABEL_USERNAME, LABEL_STATUS, LABEL_COINS, LABEL_MAX,
@@ -59,7 +58,7 @@ public class Dashboard {
         LABEL_DURATION;
     protected JToggleButton BUTTON_TOGGLE_REINVESTOR;
     protected JButton BUTTON_SAVE;
-    protected JCheckBox CHECKBOX_BTC, CHECKBOX_NMC;
+    protected JCheckBox CHECKBOX_BTC;
     protected JTextArea DISPLAY_LOG;
     protected JTextPane DISPLAY_BALANCE, TEXTPANE_ABOUT, TEXTPANE_BTC,
         TEXTPANE_CEX, TEXTPANE_CRYPTSY, TEXTPANE_SCRYPT;
@@ -89,7 +88,7 @@ public class Dashboard {
     private void initialize() {
         FRAME_DASHBOARD = new JFrame();
         FRAME_DASHBOARD
-            .setTitle("Cex.io Reinvestor v1.1.0 - By Zack Urben");
+            .setTitle("Cex.io Reinvestor v1.1.1 - By Zack Urben");
         FRAME_DASHBOARD.setBounds(100, 100, 610, 410);
         FRAME_DASHBOARD.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         FRAME_DASHBOARD.getContentPane().setLayout(null);
@@ -172,11 +171,6 @@ public class Dashboard {
         CHECKBOX_BTC.setBounds(6, 34, 70, 23);
         TAB_SETTINGS.add(CHECKBOX_BTC);
 
-        CHECKBOX_NMC = new JCheckBox("NMC");
-        CHECKBOX_NMC.setSelected(true);
-        CHECKBOX_NMC.setBounds(6, 69, 70, 23);
-        TAB_SETTINGS.add(CHECKBOX_NMC);
-
         LABEL_RESERVE = new JLabel("Reserve");
         LABEL_RESERVE.setToolTipText("Set an amount to reserve from trades.");
         LABEL_RESERVE.setBounds(88, 6, 61, 16);
@@ -188,23 +182,11 @@ public class Dashboard {
         INPUT_RESERVE_BTC.setColumns(10);
         TAB_SETTINGS.add(INPUT_RESERVE_BTC);
 
-        INPUT_RESERVE_NMC = new JTextField();
-        INPUT_RESERVE_NMC.setText("0.00000000");
-        INPUT_RESERVE_NMC.setBounds(88, 67, 134, 28);
-        INPUT_RESERVE_NMC.setColumns(10);
-        TAB_SETTINGS.add(INPUT_RESERVE_NMC);
-
         INPUT_MAX_BTC = new JTextField();
         INPUT_MAX_BTC.setText("0.00000000");
         INPUT_MAX_BTC.setBounds(244, 32, 134, 28);
         INPUT_MAX_BTC.setColumns(10);
         TAB_SETTINGS.add(INPUT_MAX_BTC);
-
-        INPUT_MAX_NMC = new JTextField();
-        INPUT_MAX_NMC.setText("0.00000000");
-        INPUT_MAX_NMC.setBounds(244, 67, 134, 28);
-        INPUT_MAX_NMC.setColumns(10);
-        TAB_SETTINGS.add(INPUT_MAX_NMC);
 
         LABEL_MAX = new JLabel("Maximum");
         LABEL_MAX
@@ -223,12 +205,6 @@ public class Dashboard {
         INPUT_MIN_BTC.setBounds(400, 32, 134, 28);
         INPUT_MIN_BTC.setColumns(10);
         TAB_SETTINGS.add(INPUT_MIN_BTC);
-
-        INPUT_MIN_NMC = new JTextField();
-        INPUT_MIN_NMC.setText("0.00000000");
-        INPUT_MIN_NMC.setBounds(400, 67, 134, 28);
-        INPUT_MIN_NMC.setColumns(10);
-        TAB_SETTINGS.add(INPUT_MIN_NMC);
 
         BUTTON_SAVE = new JButton("Save Settings");
         BUTTON_SAVE.setBounds(6, 234, 134, 29);
@@ -419,8 +395,7 @@ public class Dashboard {
      * Load settings from 'settings.txt' file, if it exists.
      * 
      * settings.txt contents:
-     * username,apiKey,apiSecret,btcActive,btcReserve,btcMax,btcMin,nmcActive,
-     * nmcReserve,nmcMax,nmcMin
+     * username,apiKey,apiSecret,btcActive,btcReserve,btcMax,btcMin
      */
     private void loadSettings() {
         File file = new File("settings.txt");
@@ -439,10 +414,6 @@ public class Dashboard {
                 this.INPUT_RESERVE_BTC.setText(temp[4]);
                 this.INPUT_MAX_BTC.setText(temp[5]);
                 this.INPUT_MIN_BTC.setText(temp[6]);
-                this.CHECKBOX_NMC.setSelected(Boolean.valueOf(temp[7]));
-                this.INPUT_RESERVE_NMC.setText(temp[8]);
-                this.INPUT_MAX_NMC.setText(temp[9]);
-                this.INPUT_MIN_NMC.setText(temp[10]);
                 this.user.out("Settings loaded successfully!");
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
@@ -460,14 +431,6 @@ public class Dashboard {
         this.user.BTC.max = new BigDecimal(INPUT_MAX_BTC.getText()).setScale(8,
             RoundingMode.DOWN);
         this.user.BTC.min = new BigDecimal(INPUT_MIN_BTC.getText()).setScale(8,
-            RoundingMode.DOWN);
-
-        this.user.NMC.active = CHECKBOX_NMC.isSelected();
-        this.user.NMC.reserve = new BigDecimal(INPUT_RESERVE_NMC.getText())
-            .setScale(8, RoundingMode.DOWN);
-        this.user.NMC.max = new BigDecimal(INPUT_MAX_NMC.getText()).setScale(8,
-            RoundingMode.DOWN);
-        this.user.NMC.min = new BigDecimal(INPUT_MIN_NMC.getText()).setScale(8,
             RoundingMode.DOWN);
     }
 }

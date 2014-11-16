@@ -40,7 +40,7 @@ public class Reinvestor extends CexAPI {
     protected long startTime, lastTime;
     protected int apiCalls;
     protected Balance balance;
-    protected Coin BTC, NMC;
+    protected Coin BTC;
     protected InputThread input;
     protected ReinvestThread reinvest;
     protected Dashboard gui;
@@ -64,8 +64,6 @@ public class Reinvestor extends CexAPI {
         this.apiCalls = 0;
         this.BTC = new Coin(true, BigDecimal.ZERO, BigDecimal.ZERO,
             BigDecimal.ZERO, "GHS/BTC");
-        this.NMC = new Coin(true, BigDecimal.ZERO, BigDecimal.ZERO,
-            BigDecimal.ZERO, "GHS/NMC");
         this.done = false;
         this.input = new InputThread(this);
         this.gui = null;
@@ -89,8 +87,6 @@ public class Reinvestor extends CexAPI {
         this.apiCalls = 0;
         this.BTC = new Coin(true, BigDecimal.ZERO, BigDecimal.ZERO,
             BigDecimal.ZERO, "GHS/BTC");
-        this.NMC = new Coin(true, BigDecimal.ZERO, BigDecimal.ZERO,
-            BigDecimal.ZERO, "GHS/NMC");
         this.done = false;
         this.input = new InputThread(this);
         this.gui = input;
@@ -325,17 +321,17 @@ public class Reinvestor extends CexAPI {
                 } else if (function == "ticker") {
                     output = this.ticker(parameters[0]);
                 } else if (function == "order_book") {
-                    output = this.order_book(parameters[0]);
+                    output = this.orderBook(parameters[0]);
                 } else if (function == "place_order") {
-                    output = this.place_order(parameters[0], parameters[1],
+                    output = this.placeOrder(parameters[0], parameters[1],
                         Float.valueOf(parameters[2]), Float
                             .valueOf(parameters[3]));
                 } else if (function == "open_orders") {
-                    output = this.open_orders(parameters[0]);
+                    output = this.openOrders(parameters[0]);
                 } else if (function == "cancel_order") {
-                    output = this.cancel_order(Integer.valueOf(parameters[0]));
+                    output = this.cancelOrder(parameters[0]);
                 } else if (function == "trade_history") {
-                    output = this.trade_history(parameters[0], Integer
+                    output = this.tradeHistory(parameters[0], Integer
                         .valueOf(parameters[1]));
                 }
 
@@ -374,8 +370,7 @@ public class Reinvestor extends CexAPI {
      * Load settings from 'settings.txt' file, if it exists.
      * 
      * settings.txt Example:
-     * username,apiKey,apiSecret,btcActive,btcReserve,btcMax,btcMin,nmcActive,
-     * nmcReserve,nmcMax,nmcMin
+     * username,apiKey,apiSecret,btcActive,btcReserve,btcMax,btcMin
      */
     public void loadSettings() {
         File file = new File("settings.txt");
@@ -394,10 +389,6 @@ public class Reinvestor extends CexAPI {
                 this.BTC.reserve = BigDecimal.valueOf(Double.valueOf(temp[4]));
                 this.BTC.max = BigDecimal.valueOf(Double.valueOf(temp[5]));
                 this.BTC.min = BigDecimal.valueOf(Double.valueOf(temp[6]));
-                this.NMC.active = Boolean.valueOf(temp[7]);
-                this.NMC.reserve = BigDecimal.valueOf(Double.valueOf(temp[8]));
-                this.NMC.max = BigDecimal.valueOf(Double.valueOf(temp[9]));
-                this.NMC.min = BigDecimal.valueOf(Double.valueOf(temp[10]));
                 this.out("Settings loaded successfully!");
             } catch (FileNotFoundException e) {
                 this.out("Error 0xB.");
@@ -419,10 +410,7 @@ public class Reinvestor extends CexAPI {
                 + this.apiSecret + "," + this.BTC.active + ","
                 + this.BTC.reserve.toPlainString() + ","
                 + this.BTC.max.toPlainString() + ","
-                + this.BTC.min.toPlainString() + "," + this.NMC.active + ","
-                + this.NMC.reserve.toPlainString() + ","
-                + this.NMC.max.toPlainString() + ","
-                + this.NMC.min.toPlainString();
+                + this.BTC.min.toPlainString();
             write.write(temp);
             this.out("Settings saved successfully!");
         } catch (IOException e) {
@@ -462,7 +450,7 @@ public class Reinvestor extends CexAPI {
          */
         public void prompt() {
             if (this.user.gui == null) {
-                out("\n[B]alance | [1] Display 'GHS/BTC' | [2] Display 'GHS/NMC' | [E]xit\n"
+                out("\n[B]alance | [1] Display 'GHS/BTC' | [E]xit\n"
                     + "[R]einvest | [S]top Reinvest | [L]oad Settings | [W]rite Settings");
             }
         }
@@ -490,10 +478,6 @@ public class Reinvestor extends CexAPI {
                         out("\n"
                             + this.user.formatTicker(this.user.execute(
                                 "ticker", (new String[] { "GHS/BTC" }))), "\n");
-                    } else if (temp.compareToIgnoreCase("2") == 0) {
-                        out("\n"
-                            + this.user.formatTicker(this.user.execute(
-                                "ticker", (new String[] { "GHS/NMC" }))), "\n");
                     } else if (temp.compareToIgnoreCase("e") == 0) {
                         this.user.done = true;
                     } else if (temp.compareToIgnoreCase("r") == 0) {
@@ -562,7 +546,7 @@ public class Reinvestor extends CexAPI {
          * requested.
          */
         public void run() {
-            boolean trade_btc = false, trade_nmc = false;
+            boolean trade_btc = false;
             while (!this.user.done && !this.stop) {
                 if (this.user.debug) {
                     this.user.out("[DBG] ReinvestThread:"
@@ -584,23 +568,15 @@ public class Reinvestor extends CexAPI {
                         .compareTo(this.user.balance.BTC.available) <= -1))
                         || ((this.user.BTC.active) && (!this.user.pending
                             .isEmpty()));
-                    trade_nmc = ((this.user.NMC.active)
-                        && (this.user.balance != null) && (this.user.NMC.reserve
-                        .compareTo(this.user.balance.NMC.available) <= -1))
-                        || ((this.user.NMC.active) && (!this.user.pending
-                            .isEmpty()));
 
-                    if (trade_btc || trade_nmc) {
+                    if (trade_btc) {
                         if (this.user.debug) {
-                            this.user.out("[DBG] trade_btc:trade_nmc {"
-                                + trade_btc + ":" + trade_nmc + "}");
+                            this.user.out("[DBG] trade_btc {"
+                                + trade_btc + "}");
                         }
 
                         if (trade_btc) {
                             this.analyze(this.user.balance.BTC, this.user.BTC);
-                        }
-                        if (trade_nmc) {
-                            this.analyze(this.user.balance.NMC, this.user.NMC);
                         }
                     } else {
                         if (this.user.debug) {
